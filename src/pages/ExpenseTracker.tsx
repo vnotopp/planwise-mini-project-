@@ -36,6 +36,7 @@ export default function ExpenseTracker() {
     const id = generateId();
     const { eventId, resourceId, amount, date, note } = data;
     addExpense({ eventId, resourceId, amount, date, note, id });
+    // Update actual cost of the resource in the event
     if (selectedEvent) {
       const resource = selectedEvent.resources.find((r) => r.id === data.resourceId);
       if (resource) {
@@ -65,7 +66,15 @@ export default function ExpenseTracker() {
         </Button>
       </motion.div>
 
-      {grouped.length === 0 ? (
+      {events.length === 0 ? (
+        <GlassCard>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <Receipt className="h-10 w-10 text-muted-foreground mb-3" />
+            <h3 className="font-display text-lg font-semibold text-foreground">No events yet</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Create an event in Event Planner first</p>
+          </div>
+        </GlassCard>
+      ) : grouped.length === 0 ? (
         <EmptyState icon={Receipt} title="No expenses logged" description="Log expenses against your events to track actual spending." />
       ) : (
         <div className="space-y-6">
@@ -87,7 +96,7 @@ export default function ExpenseTracker() {
                     return (
                       <div key={ex.id} className="flex items-center justify-between rounded-lg bg-muted/30 px-3 py-2">
                         <div>
-                          <p className="text-sm text-foreground">{resource?.name || 'Unknown'}</p>
+                          <p className="text-sm text-foreground">{resource ? `${resource.name} — ${resource.category}` : 'Unknown'}</p>
                           <p className="text-xs text-muted-foreground">{ex.date} {ex.note && `— ${ex.note}`}</p>
                         </div>
                         <div className="flex items-center gap-3">
@@ -122,12 +131,18 @@ export default function ExpenseTracker() {
             {selectedEvent && (
               <div>
                 <Label>Resource</Label>
-                <Select value={form.watch('resourceId')} onValueChange={(v) => form.setValue('resourceId', v)}>
-                  <SelectTrigger className="bg-muted/30 border-border"><SelectValue placeholder="Select resource" /></SelectTrigger>
-                  <SelectContent className="glass-card border-border">
-                    {selectedEvent.resources.map((r) => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                {selectedEvent.resources.length === 0 ? (
+                  <p className="text-xs text-muted-foreground mt-1">No resources in this event. Add resources in Event Planner first.</p>
+                ) : (
+                  <Select value={form.watch('resourceId')} onValueChange={(v) => form.setValue('resourceId', v)}>
+                    <SelectTrigger className="bg-muted/30 border-border"><SelectValue placeholder="Select resource" /></SelectTrigger>
+                    <SelectContent className="glass-card border-border">
+                      {selectedEvent.resources.map((r) => (
+                        <SelectItem key={r.id} value={r.id}>{r.name} — {r.category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             )}
             <div><Label>Amount (₹)</Label><Input type="number" {...form.register('amount')} className="bg-muted/30 border-border" /></div>

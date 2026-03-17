@@ -229,6 +229,9 @@ export default function DebtManager() {
         </GlassCard>
       )}
 
+      {/* AI Debt Advisor */}
+      {debts.length > 0 && <AiDebtAdvisor />}
+
       <Dialog open={dialog} onOpenChange={setDialog}>
         <DialogContent className="glass-card border-border">
           <DialogHeader><DialogTitle className="font-display">Add Debt</DialogTitle></DialogHeader>

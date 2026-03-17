@@ -189,6 +189,9 @@ export default function EventPlanner() {
         </div>
       )}
 
+      {/* AI Budget Advisor */}
+      {events.some((e) => e.resources.length > 0) && <AiBudgetAdvisor />}
+
       {/* Event Dialog */}
       <Dialog open={eventDialog} onOpenChange={setEventDialog}>
         <DialogContent className="glass-card border-border">
