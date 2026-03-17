@@ -59,7 +59,8 @@ export default function EventPlanner() {
 
   const onSubmitResource = (data: z.infer<typeof resourceSchema>) => {
     if (!resourceDialog) return;
-    addResource(resourceDialog, { ...data, id: generateId(), category: data.category as ResourceCategory });
+    const { name, estimatedCost, actualCost } = data;
+    addResource(resourceDialog, { name, estimatedCost, actualCost, id: generateId(), category: data.category as ResourceCategory });
     toast.success('Resource added');
     resourceForm.reset();
     setResourceDialog(null);

@@ -34,8 +34,8 @@ export default function ExpenseTracker() {
 
   const onSubmit = (data: z.infer<typeof expenseSchema>) => {
     const id = generateId();
-    addExpense({ ...data, id });
-    // Update actual cost on resource
+    const { eventId, resourceId, amount, date, note } = data;
+    addExpense({ eventId, resourceId, amount, date, note, id });
     if (selectedEvent) {
       const resource = selectedEvent.resources.find((r) => r.id === data.resourceId);
       if (resource) {

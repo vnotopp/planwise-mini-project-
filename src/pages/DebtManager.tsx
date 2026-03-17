@@ -97,7 +97,8 @@ export default function DebtManager() {
   const pieData = debts.map((d) => ({ name: d.name, value: d.principal }));
 
   const onSubmit = (data: z.infer<typeof debtSchema>) => {
-    addDebt({ ...data, id: generateId() });
+    const { name, principal, interestRate, minimumPayment } = data;
+    addDebt({ name, principal, interestRate, minimumPayment, id: generateId() });
     toast.success('Debt added');
     form.reset();
     setDialog(false);
