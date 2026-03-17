@@ -44,11 +44,12 @@ export default function EventPlanner() {
   const resourceForm = useForm({ resolver: zodResolver(resourceSchema), defaultValues: { name: '', category: 'Food', estimatedCost: 0, actualCost: 0 } });
 
   const onSubmitEvent = (data: z.infer<typeof eventSchema>) => {
+    const { name, type, date, budget } = data;
     if (editEvent) {
-      updateEvent(editEvent.id, data);
+      updateEvent(editEvent.id, { name, type, date, budget });
       toast.success('Event updated');
     } else {
-      addEvent({ ...data, id: generateId(), resources: [] });
+      addEvent({ name, type, date, budget, id: generateId(), resources: [] });
       toast.success('Event created');
     }
     eventForm.reset();
