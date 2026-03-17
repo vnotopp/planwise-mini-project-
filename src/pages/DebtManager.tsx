@@ -4,6 +4,7 @@ import { GlassCard } from '@/components/GlassCard';
 import { EmptyState } from '@/components/EmptyState';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
+import { AiDebtAdvisor } from '@/components/AiDebtAdvisor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -227,6 +228,9 @@ export default function DebtManager() {
           </ul>
         </GlassCard>
       )}
+
+      {/* AI Debt Advisor */}
+      {debts.length > 0 && <AiDebtAdvisor />}
 
       <Dialog open={dialog} onOpenChange={setDialog}>
         <DialogContent className="glass-card border-border">
