@@ -32,7 +32,7 @@ function getSmartTips(dti: number): string[] {
     'Consider debt consolidation to lower average interest rates.',
   ];
   if (dti > 0.3) return [
-    'You're in a manageable range. Focus on paying off highest-interest debt first.',
+    'You are in a manageable range. Focus on paying off highest-interest debt first.',
     'Try to allocate at least 20% of income toward debt repayment.',
   ];
   return [
