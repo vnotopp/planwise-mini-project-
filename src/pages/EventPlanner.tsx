@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore, generateId, formatCurrency, type PlanEvent, type Resource, type ResourceCategory } from '@/store/useStore';
 import { GlassCard } from '@/components/GlassCard';
+import { AiBudgetAdvisor } from '@/components/AiBudgetAdvisor';
 import { EmptyState } from '@/components/EmptyState';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
