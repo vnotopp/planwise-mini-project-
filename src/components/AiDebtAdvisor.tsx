@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Building2, CheckCircle2, TrendingUp, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { createParticleBurst } from '@/components/SpaceBackground';
 
 interface DebtPlan {
   strategy: string;
@@ -20,11 +21,12 @@ export function AiDebtAdvisor() {
   const [plan, setPlan] = useState<DebtPlan | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const generate = async () => {
+  const generate = async (e?: React.MouseEvent) => {
     if (debts.length === 0) {
       toast.error('Add debts first to get a plan');
       return;
     }
+    if (e) createParticleBurst(e.clientX, e.clientY, ['#F0B429']);
     setLoading(true);
     setPlan(null);
 
@@ -43,11 +45,10 @@ export function AiDebtAdvisor() {
       const { data, error } = await supabase.functions.invoke('ai-debt-advisor', {
         body: { profile },
       });
-
       if (error) throw error;
       if (data?.plan) setPlan(data.plan);
-    } catch (e: any) {
-      console.error(e);
+    } catch (err: any) {
+      console.error(err);
       toast.error('Failed to generate debt plan. Please try again.');
     } finally {
       setLoading(false);
@@ -62,14 +63,14 @@ export function AiDebtAdvisor() {
   };
 
   return (
-    <GlassCard delay={0.35} className="border-primary/30">
+    <GlassCard delay={0.35} className="border-primary/20">
       <div className="flex items-center gap-2 mb-1">
         <Building2 className="h-5 w-5 text-primary" />
-        <h2 className="font-display text-lg font-semibold">🏦 AI Debt Minimizer</h2>
+        <h2 className="font-display text-lg font-bold">🏦 AI Debt Minimizer</h2>
       </div>
       <p className="text-sm text-muted-foreground mb-4">Your personalized path to financial freedom</p>
 
-      <Button onClick={generate} disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-secondary font-semibold">
+      <Button onClick={generate} disabled={loading} className="w-full btn-primary-gradient text-primary-foreground font-bold h-11">
         {loading ? 'Generating...' : 'Generate My Debt Plan'}
       </Button>
 
@@ -83,16 +84,14 @@ export function AiDebtAdvisor() {
 
       {!loading && plan && (
         <div className="mt-4 space-y-4">
-          {/* Strategy */}
-          <div className="rounded-lg bg-muted/30 p-4 border border-border">
-            <p className="font-display font-semibold text-sm text-primary mb-1">Recommended Strategy</p>
+          <div className="rounded-lg bg-muted/20 p-4 border border-border">
+            <p className="font-display font-bold text-sm text-primary mb-1">Recommended Strategy</p>
             <p className="text-sm text-foreground">{plan.strategy}</p>
           </div>
 
-          {/* Milestones */}
           {plan.milestones && plan.milestones.length > 0 && (
-            <div className="rounded-lg bg-muted/30 p-4 border border-border">
-              <p className="font-display font-semibold text-sm text-primary mb-3">Key Milestones</p>
+            <div className="rounded-lg bg-muted/20 p-4 border border-border">
+              <p className="font-display font-bold text-sm text-primary mb-3">Key Milestones</p>
               <div className="space-y-3">
                 {plan.milestones.map((m, i) => (
                   <div key={i} className="flex items-start gap-3">
@@ -104,29 +103,26 @@ export function AiDebtAdvisor() {
             </div>
           )}
 
-          {/* Investing Tip */}
           {plan.investingTip && (
             <div className="rounded-lg bg-primary/10 p-4 border border-primary/20">
               <div className="flex items-center gap-2 mb-1">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                <p className="font-display font-semibold text-sm text-primary">Investing Tip</p>
+                <p className="font-display font-bold text-sm text-primary">Investing Tip</p>
               </div>
               <p className="text-sm text-foreground">{plan.investingTip}</p>
             </div>
           )}
 
-          {/* DTI Badge */}
           {plan.debtToIncomeRatio && (
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">Debt-to-Income:</span>
-              <Badge variant="outline" className={`${getDtiBadgeColor(plan.debtToIncomeRatio)} text-xs font-semibold px-3 py-1`}>
+              <Badge variant="outline" className={`${getDtiBadgeColor(plan.debtToIncomeRatio)} text-xs font-bold font-mono px-3 py-1`}>
                 {plan.debtToIncomeRatio}
               </Badge>
             </div>
           )}
 
-          {/* Regenerate */}
-          <button onClick={generate} className="flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors">
+          <button onClick={() => generate()} className="flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors">
             <RefreshCw className="h-3 w-3" /> Regenerate Plan
           </button>
         </div>

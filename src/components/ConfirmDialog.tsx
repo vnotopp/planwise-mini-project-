@@ -24,9 +24,9 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="glass-card border-border">
+      <AlertDialogContent className="bg-card border-border">
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-display">{title}</AlertDialogTitle>
+          <AlertDialogTitle className="font-display font-bold">{title}</AlertDialogTitle>
           <AlertDialogDescription className="text-muted-foreground">{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
