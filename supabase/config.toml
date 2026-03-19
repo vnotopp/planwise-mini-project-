@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.ai-debt-advisor]
 verify_jwt = false
+
+[functions.ai-event-suggester]
+verify_jwt = false

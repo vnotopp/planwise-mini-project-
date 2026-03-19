@@ -12,8 +12,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        body: ["DM Sans", "sans-serif"],
+        display: ["Syne", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        mono: ["IBM Plex Mono", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -56,6 +57,7 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          elevated: "hsl(var(--card-elevated))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -83,7 +85,7 @@ export default {
           to: { height: "0" },
         },
         "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "slide-in": {
@@ -102,6 +104,24 @@ export default {
           "0%": { strokeDashoffset: "283" },
           "100%": { strokeDashoffset: "var(--ring-offset)" },
         },
+        "float": {
+          "0%, 100%": { transform: "translate(0, 0)" },
+          "33%": { transform: "translate(30px, -20px)" },
+          "66%": { transform: "translate(-20px, 15px)" },
+        },
+        "float-reverse": {
+          "0%, 100%": { transform: "translate(0, 0)" },
+          "33%": { transform: "translate(-25px, 20px)" },
+          "66%": { transform: "translate(15px, -25px)" },
+        },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "0.2", transform: "scale(1)" },
+          "50%": { opacity: "0.35", transform: "scale(1.05)" },
+        },
+        "shimmer": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -111,6 +131,9 @@ export default {
         "scale-in": "scale-in 0.3s ease-out forwards",
         "counter-roll": "counter-roll 0.6s ease-out forwards",
         "ring-fill": "ring-fill 1.5s ease-out forwards",
+        "float": "float 25s ease-in-out infinite",
+        "float-reverse": "float-reverse 22s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 30s ease-in-out infinite",
       },
     },
   },

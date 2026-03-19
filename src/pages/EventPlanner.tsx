@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStore, generateId, formatCurrency, type PlanEvent, type Resource, type ResourceCategory } from '@/store/useStore';
 import { GlassCard } from '@/components/GlassCard';
 import { AiBudgetAdvisor } from '@/components/AiBudgetAdvisor';
+import { AiEventSuggester } from '@/components/AiEventSuggester';
 import { EmptyState } from '@/components/EmptyState';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
@@ -11,11 +12,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
-import { CalendarDays, Plus, Trash2, Edit } from 'lucide-react';
+import { CalendarDays, Plus, Trash2, Edit, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { createParticleBurst } from '@/components/SpaceBackground';
 
 const eventSchema = z.object({
   name: z.string().min(1, 'Name required'),
@@ -52,6 +54,8 @@ export default function EventPlanner() {
     } else {
       addEvent({ name, type, date, budget, id: generateId(), resources: [] });
       toast.success('Event created');
+      // Confetti burst
+      createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, ['#F0B429', '#06B6D4', '#ffffff']);
     }
     eventForm.reset();
     setEditEvent(null);
@@ -77,13 +81,16 @@ export default function EventPlanner() {
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Event Planner</h1>
-          <p className="text-muted-foreground mt-1">Plan and manage your event budgets</p>
+          <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Event Planner</h1>
+          <p className="text-muted-foreground mt-1 text-sm">Plan and manage your event budgets</p>
         </div>
-        <Button onClick={() => { setEditEvent(null); eventForm.reset(); setEventDialog(true); }} className="bg-primary text-primary-foreground hover:bg-secondary">
+        <Button onClick={() => { setEditEvent(null); eventForm.reset(); setEventDialog(true); }} className="btn-primary-gradient text-primary-foreground font-bold">
           <Plus className="mr-2 h-4 w-4" /> New Event
         </Button>
       </motion.div>
+
+      {/* AI Event Suggester */}
+      <AiEventSuggester />
 
       {events.length === 0 ? (
         <EmptyState icon={CalendarDays} title="No events yet" description="Create your first event to start planning resources and tracking budgets." />
@@ -100,10 +107,10 @@ export default function EventPlanner() {
                 <div className="flex flex-col gap-4">
                   <div className="flex items-start justify-between cursor-pointer" onClick={() => setExpandedEvent(expanded ? null : ev.id)}>
                     <div>
-                      <h3 className="font-display text-xl font-semibold text-foreground">{ev.name}</h3>
+                      <h3 className="font-display text-xl font-bold text-foreground">{ev.name}</h3>
                       <div className="flex gap-3 mt-1 flex-wrap">
-                        <Badge variant="outline" className="border-border text-muted-foreground">{ev.type}</Badge>
-                        <span className="text-xs text-muted-foreground">{ev.date}</span>
+                        <Badge variant="outline" className="border-border text-muted-foreground text-[10px]">{ev.type}</Badge>
+                        <span className="text-xs text-muted-foreground font-mono">{ev.date}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -118,16 +125,16 @@ export default function EventPlanner() {
 
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
-                      <p className="text-xs text-muted-foreground">Budget</p>
-                      <p className="font-display font-bold text-foreground">{formatCurrency(ev.budget)}</p>
+                      <p className="label-caps text-muted-foreground">Budget</p>
+                      <p className="font-mono font-bold text-primary">{formatCurrency(ev.budget)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Estimated</p>
-                      <p className="font-display font-bold text-foreground">{formatCurrency(totalEst)}</p>
+                      <p className="label-caps text-muted-foreground">Estimated</p>
+                      <p className="font-mono font-bold text-foreground">{formatCurrency(totalEst)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Actual</p>
-                      <p className={`font-display font-bold ${overBudget ? 'text-destructive' : 'text-success'}`}>{formatCurrency(totalAct)}</p>
+                      <p className="label-caps text-muted-foreground">Actual</p>
+                      <p className={`font-mono font-bold ${overBudget ? 'text-destructive' : 'text-success'}`}>{formatCurrency(totalAct)}</p>
                     </div>
                   </div>
 
@@ -135,12 +142,14 @@ export default function EventPlanner() {
                   <div>
                     <div className="flex justify-between text-xs text-muted-foreground mb-1">
                       <span>Spent</span>
-                      <span>{ev.budget > 0 ? Math.round((totalAct / ev.budget) * 100) : 0}%</span>
+                      <span className="font-mono">{ev.budget > 0 ? Math.round((totalAct / ev.budget) * 100) : 0}%</span>
                     </div>
                     <div className="h-2 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-1000 ${overBudget ? 'bg-destructive' : 'bg-success'}`}
-                        style={{ width: `${Math.min(100, ev.budget > 0 ? (totalAct / ev.budget) * 100 : 0)}%` }}
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(100, ev.budget > 0 ? (totalAct / ev.budget) * 100 : 0)}%` }}
+                        transition={{ duration: 1, ease: 'easeOut' }}
+                        className={`h-full rounded-full ${overBudget ? 'bg-destructive' : 'bg-success'}`}
                       />
                     </div>
                   </div>
@@ -148,7 +157,7 @@ export default function EventPlanner() {
                   {expanded && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-3 pt-4 border-t border-border">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-semibold text-foreground">Resources</h4>
+                        <h4 className="text-sm font-bold text-foreground">Resources</h4>
                         <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary/10" onClick={() => { resourceForm.reset(); setResourceDialog(ev.id); }}>
                           <Plus className="mr-1 h-3 w-3" /> Add Resource
                         </Button>
@@ -159,16 +168,18 @@ export default function EventPlanner() {
                         <div className="space-y-2">
                           {ev.resources.map((r) => {
                             const diff = r.actualCost - r.estimatedCost;
+                            const isOver = diff > 0;
                             return (
-                              <div key={r.id} className="flex items-center justify-between rounded-lg bg-muted/30 px-3 py-2">
+                              <div key={r.id} className={`flex items-center justify-between rounded-lg bg-muted/20 px-3 py-2 border-l-2 transition-colors ${isOver ? 'border-l-destructive' : 'border-l-success'}`}>
                                 <div className="flex items-center gap-3">
-                                  <Badge variant="outline" className="border-border text-xs">{r.category}</Badge>
+                                  <Badge variant="outline" className="border-border text-[10px] font-mono">{r.category}</Badge>
                                   <span className="text-sm text-foreground">{r.name}</span>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                  <span className="text-xs text-muted-foreground">Est: {formatCurrency(r.estimatedCost)}</span>
-                                  <span className="text-xs text-muted-foreground">Act: {formatCurrency(r.actualCost)}</span>
-                                  <span className={`text-xs font-semibold ${diff > 0 ? 'text-destructive' : 'text-success'}`}>
+                                  <span className="text-xs text-muted-foreground font-mono">Est: {formatCurrency(r.estimatedCost)}</span>
+                                  <span className="text-xs text-muted-foreground font-mono">Act: {formatCurrency(r.actualCost)}</span>
+                                  <span className={`text-xs font-bold font-mono flex items-center gap-1 ${isOver ? 'text-destructive' : 'text-success'}`}>
+                                    {isOver ? <AlertTriangle className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />}
                                     {diff > 0 ? '+' : ''}{formatCurrency(diff)}
                                   </span>
                                   <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteResource(ev.id, r.id)}>
@@ -194,15 +205,15 @@ export default function EventPlanner() {
 
       {/* Event Dialog */}
       <Dialog open={eventDialog} onOpenChange={setEventDialog}>
-        <DialogContent className="glass-card border-border">
-          <DialogHeader><DialogTitle className="font-display">{editEvent ? 'Edit Event' : 'New Event'}</DialogTitle></DialogHeader>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader><DialogTitle className="font-display font-bold">{editEvent ? 'Edit Event' : 'New Event'}</DialogTitle></DialogHeader>
           <form onSubmit={eventForm.handleSubmit(onSubmitEvent)} className="space-y-4">
-            <div><Label>Name</Label><Input {...eventForm.register('name')} className="bg-muted/30 border-border" /></div>
-            <div><Label>Type</Label><Input {...eventForm.register('type')} placeholder="e.g. Wedding, Party" className="bg-muted/30 border-border" /></div>
-            <div><Label>Date</Label><Input type="date" {...eventForm.register('date')} className="bg-muted/30 border-border" /></div>
-            <div><Label>Budget (₹)</Label><Input type="number" {...eventForm.register('budget')} className="bg-muted/30 border-border" /></div>
+            <div><Label className="label-caps text-muted-foreground">Name</Label><Input {...eventForm.register('name')} className="bg-muted/30 border-border mt-1" /></div>
+            <div><Label className="label-caps text-muted-foreground">Type</Label><Input {...eventForm.register('type')} placeholder="e.g. Wedding, Party" className="bg-muted/30 border-border mt-1" /></div>
+            <div><Label className="label-caps text-muted-foreground">Date</Label><Input type="date" {...eventForm.register('date')} className="bg-muted/30 border-border mt-1" /></div>
+            <div><Label className="label-caps text-muted-foreground">Budget (₹)</Label><Input type="number" {...eventForm.register('budget')} className="bg-muted/30 border-border mt-1" /></div>
             <DialogFooter>
-              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-secondary">{editEvent ? 'Update' : 'Create'}</Button>
+              <Button type="submit" className="btn-primary-gradient text-primary-foreground font-bold">{editEvent ? 'Update' : 'Create'}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -210,23 +221,23 @@ export default function EventPlanner() {
 
       {/* Resource Dialog */}
       <Dialog open={!!resourceDialog} onOpenChange={() => setResourceDialog(null)}>
-        <DialogContent className="glass-card border-border">
-          <DialogHeader><DialogTitle className="font-display">Add Resource</DialogTitle></DialogHeader>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader><DialogTitle className="font-display font-bold">Add Resource</DialogTitle></DialogHeader>
           <form onSubmit={resourceForm.handleSubmit(onSubmitResource)} className="space-y-4">
-            <div><Label>Name</Label><Input {...resourceForm.register('name')} className="bg-muted/30 border-border" /></div>
+            <div><Label className="label-caps text-muted-foreground">Name</Label><Input {...resourceForm.register('name')} className="bg-muted/30 border-border mt-1" /></div>
             <div>
-              <Label>Category</Label>
+              <Label className="label-caps text-muted-foreground">Category</Label>
               <Select value={resourceForm.watch('category')} onValueChange={(v) => resourceForm.setValue('category', v)}>
-                <SelectTrigger className="bg-muted/30 border-border"><SelectValue /></SelectTrigger>
-                <SelectContent className="glass-card border-border">
+                <SelectTrigger className="bg-muted/30 border-border mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent className="bg-card border-border">
                   {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Estimated Cost (₹)</Label><Input type="number" {...resourceForm.register('estimatedCost')} className="bg-muted/30 border-border" /></div>
-            <div><Label>Actual Cost (₹)</Label><Input type="number" {...resourceForm.register('actualCost')} className="bg-muted/30 border-border" /></div>
+            <div><Label className="label-caps text-muted-foreground">Estimated Cost (₹)</Label><Input type="number" {...resourceForm.register('estimatedCost')} className="bg-muted/30 border-border mt-1" /></div>
+            <div><Label className="label-caps text-muted-foreground">Actual Cost (₹)</Label><Input type="number" {...resourceForm.register('actualCost')} className="bg-muted/30 border-border mt-1" /></div>
             <DialogFooter>
-              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-secondary">Add</Button>
+              <Button type="submit" className="btn-primary-gradient text-primary-foreground font-bold">Add</Button>
             </DialogFooter>
           </form>
         </DialogContent>

@@ -1,9 +1,9 @@
 import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
-import { useLocation } from 'react-router-dom';
+import { useStore } from '@/store/useStore';
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, useSidebar,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from '@/components/ui/sidebar';
 
 const navItems = [
@@ -17,26 +17,51 @@ const navItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
-  const location = useLocation();
+  const { events, debts, monthlyIncome, monthlySavings } = useStore();
+
+  // Quick health calc for sidebar widget
+  const totalBudget = events.reduce((s, e) => s + e.budget, 0);
+  const totalActual = events.reduce((s, e) => s + e.resources.reduce((a, r) => a + r.actualCost, 0), 0);
+  const totalMinPayment = debts.reduce((s, d) => s + d.minimumPayment, 0);
+
+  let quickScore = 0;
+  // budget util
+  if (totalBudget > 0) {
+    const r = totalActual / totalBudget;
+    quickScore += r < 0.7 ? 30 : r <= 0.9 ? 20 : r <= 1 ? 10 : 0;
+  } else if (totalActual === 0) quickScore += 30;
+  // dti
+  if (monthlyIncome > 0) {
+    const r = totalMinPayment / monthlyIncome;
+    quickScore += r < 0.2 ? 25 : r <= 0.35 ? 15 : r <= 0.5 ? 8 : 0;
+  } else if (totalMinPayment === 0) quickScore += 25;
+  // savings
+  if (monthlyIncome > 0) {
+    const r = monthlySavings / monthlyIncome;
+    quickScore += r > 0.3 ? 25 : r >= 0.2 ? 18 : r >= 0.1 ? 10 : 0;
+  }
+  quickScore += 20; // default accuracy
+
+  const dotColor = quickScore >= 75 ? 'bg-success' : quickScore >= 50 ? 'bg-primary' : quickScore >= 25 ? 'bg-warning' : 'bg-destructive';
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
+    <Sidebar collapsible="icon" className="border-r border-border bg-sidebar/80 backdrop-blur-sm">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg btn-primary-gradient">
             <Compass className="h-5 w-5 text-primary-foreground" />
           </div>
           {!collapsed && (
             <div>
-              <h1 className="font-display text-lg font-bold text-foreground">PlanWise</h1>
-              <p className="text-[10px] text-muted-foreground tracking-widest uppercase">Financial Suite</p>
+              <h1 className="font-display text-lg font-extrabold text-gradient-gold tracking-tight">PlanWise</h1>
+              <p className="font-mono text-[9px] text-muted-foreground tracking-[0.15em] uppercase">Financial Suite</p>
             </div>
           )}
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-muted-foreground text-[10px] tracking-widest uppercase">Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="label-caps text-muted-foreground">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -45,8 +70,8 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end={item.url === '/'}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                      activeClassName="bg-primary/10 text-primary font-medium"
+                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                      activeClassName="bg-card-elevated text-primary font-medium border-l-2 border-primary"
                     >
                       <item.icon className="h-4 w-4 shrink-0" />
                       {!collapsed && <span>{item.title}</span>}
@@ -58,6 +83,15 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      {!collapsed && (
+        <SidebarFooter className="p-4">
+          <div className="flex items-center gap-2 rounded-lg bg-muted/30 px-3 py-2">
+            <div className={`h-2.5 w-2.5 rounded-full ${dotColor}`} />
+            <span className="text-xs text-muted-foreground">Health Score</span>
+            <span className="ml-auto font-mono text-xs text-primary font-bold">{quickScore}</span>
+          </div>
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }

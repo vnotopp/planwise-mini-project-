@@ -6,10 +6,10 @@ import { BarChart3 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, LineChart, Line } from 'recharts';
 import { useMemo } from 'react';
 
-const COLORS = ['#F59E0B', '#D97706', '#10B981', '#EF4444', '#6366F1', '#EC4899'];
+const COLORS = ['#F0B429', '#D97706', '#10B981', '#EF4444', '#06B6D4', '#EC4899'];
 const CATEGORIES: ResourceCategory[] = ['Food', 'Venue', 'Decor', 'Transport', 'Misc'];
 
-const tooltipStyle = { background: 'hsl(222 47% 11%)', border: '1px solid hsl(220 26% 14%)', borderRadius: '8px', color: '#F9FAFB' };
+const tooltipStyle = { background: 'hsl(220 30% 5%)', border: '1px solid hsl(215 14% 15%)', borderRadius: '8px', color: '#F0F6FC' };
 
 export default function Reports() {
   const { events, debts, monthlySavings } = useStore();
@@ -34,7 +34,6 @@ export default function Reports() {
     return Object.entries(map).map(([name, value]) => ({ name, value }));
   }, [events]);
 
-  // Debt payoff timeline (reuse avalanche logic)
   const timeline = useMemo(() => {
     if (debts.length === 0 || monthlySavings <= 0) return [];
     let remaining = debts.map((d) => ({ ...d, balance: d.principal }));
@@ -69,8 +68,8 @@ export default function Reports() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="font-display text-3xl font-bold text-foreground">Reports</h1>
-        <p className="text-muted-foreground mt-1">Visual analysis of your budgets and debt</p>
+        <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Reports</h1>
+        <p className="text-muted-foreground mt-1 text-sm">Visual analysis of your budgets and debt</p>
       </motion.div>
 
       {!hasData ? (
@@ -78,42 +77,42 @@ export default function Reports() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <GlassCard>
-            <h2 className="font-display text-lg font-semibold mb-4">Planned vs Actual by Category</h2>
+            <h2 className="font-display text-lg font-bold mb-4">Planned vs Actual by Category</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={categoryData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 26% 14%)" />
-                <XAxis dataKey="category" stroke="#9CA3AF" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(215 14% 15%)" />
+                <XAxis dataKey="category" stroke="#8B949E" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#8B949E" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={tooltipStyle} />
-                <Bar dataKey="estimated" fill="#F59E0B" radius={[4, 4, 0, 0]} animationDuration={1000} name="Estimated" />
+                <Bar dataKey="estimated" fill="#F0B429" radius={[4, 4, 0, 0]} animationDuration={1000} name="Estimated" />
                 <Bar dataKey="actual" fill="#10B981" radius={[4, 4, 0, 0]} animationDuration={1000} name="Actual" />
               </BarChart>
             </ResponsiveContainer>
           </GlassCard>
 
           <GlassCard delay={0.1}>
-            <h2 className="font-display text-lg font-semibold mb-4">Budget Allocation</h2>
+            <h2 className="font-display text-lg font-bold mb-4">Budget Allocation</h2>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie data={allocationData} cx="50%" cy="50%" innerRadius={60} outerRadius={110} dataKey="value" animationDuration={1000}>
                   {allocationData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={tooltipStyle} />
-                <Legend wrapperStyle={{ color: '#9CA3AF', fontSize: 12 }} />
+                <Legend wrapperStyle={{ color: '#8B949E', fontSize: 12 }} />
               </PieChart>
             </ResponsiveContainer>
           </GlassCard>
 
           {timeline.length > 0 && (
             <GlassCard delay={0.2} className="lg:col-span-2">
-              <h2 className="font-display text-lg font-semibold mb-4">Debt Payoff Trajectory</h2>
+              <h2 className="font-display text-lg font-bold mb-4">Debt Payoff Trajectory</h2>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={timeline}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 26% 14%)" />
-                  <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fontSize: 11 }} label={{ value: 'Months', position: 'bottom', fill: '#9CA3AF', fontSize: 11 }} />
-                  <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(215 14% 15%)" />
+                  <XAxis dataKey="month" stroke="#8B949E" tick={{ fontSize: 11 }} label={{ value: 'Months', position: 'bottom', fill: '#8B949E', fontSize: 11 }} />
+                  <YAxis stroke="#8B949E" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                   <Tooltip formatter={(v: number) => formatCurrency(v)} contentStyle={tooltipStyle} />
-                  <Line type="monotone" dataKey="totalDebt" stroke="#F59E0B" strokeWidth={2} dot={false} animationDuration={1500} />
+                  <Line type="monotone" dataKey="totalDebt" stroke="#F0B429" strokeWidth={2} dot={false} animationDuration={1500} />
                 </LineChart>
               </ResponsiveContainer>
             </GlassCard>

@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { createParticleBurst } from '@/components/SpaceBackground';
 
 interface Tip {
   tip: string;
@@ -19,11 +20,13 @@ export function AiBudgetAdvisor() {
 
   const hasResources = events.some((e) => e.resources.length > 0);
 
-  const analyze = async () => {
+  const analyze = async (e?: React.MouseEvent) => {
     if (!hasResources) {
       toast.error('Add resources to your events first');
       return;
     }
+    // Particle burst
+    if (e) createParticleBurst(e.clientX, e.clientY, ['#F0B429']);
     setLoading(true);
     setTips([]);
 
@@ -40,11 +43,10 @@ export function AiBudgetAdvisor() {
       const { data, error } = await supabase.functions.invoke('ai-budget-advisor', {
         body: { events: eventSummary },
       });
-
       if (error) throw error;
       if (data?.tips) setTips(data.tips);
-    } catch (e: any) {
-      console.error(e);
+    } catch (err: any) {
+      console.error(err);
       toast.error('Failed to get AI suggestions. Please try again.');
     } finally {
       setLoading(false);
@@ -52,21 +54,21 @@ export function AiBudgetAdvisor() {
   };
 
   return (
-    <GlassCard delay={0.3} className="border-primary/30">
+    <GlassCard delay={0.3} className="border-primary/20">
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="h-5 w-5 text-primary" />
-        <h2 className="font-display text-lg font-semibold">✨ AI Budget Minimizer</h2>
+        <h2 className="font-display text-lg font-bold">✨ AI Budget Minimizer</h2>
       </div>
       <p className="text-sm text-muted-foreground mb-4">Get personalized suggestions to reduce your event costs</p>
 
-      <Button onClick={analyze} disabled={loading} className="w-full bg-primary text-primary-foreground hover:bg-secondary font-semibold">
+      <Button onClick={analyze} disabled={loading} className="w-full btn-primary-gradient text-primary-foreground font-bold h-11">
         {loading ? 'Analyzing...' : 'Analyze My Budget'}
       </Button>
 
       {loading && (
         <div className="mt-4 space-y-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex gap-3 items-start">
+            <div key={i} className="flex gap-3 items-start animate-pulse">
               <Skeleton className="h-8 w-8 rounded-full shrink-0" />
               <div className="flex-1 space-y-2">
                 <Skeleton className="h-4 w-1/3" />
@@ -80,8 +82,8 @@ export function AiBudgetAdvisor() {
       {!loading && tips.length > 0 && (
         <div className="mt-4 space-y-3">
           {tips.map((t, i) => (
-            <div key={i} className="rounded-lg border-l-4 border-primary bg-muted/30 p-3">
-              <p className="font-display font-semibold text-sm text-foreground">{i + 1}. {t.tip}</p>
+            <div key={i} className="rounded-lg border-l-4 border-primary bg-muted/20 p-3">
+              <p className="font-display font-bold text-sm text-foreground">{i + 1}. {t.tip}</p>
               <p className="text-xs text-muted-foreground mt-1">{t.detail}</p>
             </div>
           ))}
