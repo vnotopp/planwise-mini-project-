@@ -15,7 +15,7 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const systemPrompt =
-      "You are an expert Indian event planner. Based on the event details provided, give exactly 5 specific, practical suggestions to make the event successful and within budget. Each suggestion must include: a category (Venue/Food/Decor/Entertainment/Budget), a short title, and 2-3 sentence actionable advice specific to their guest count, budget in ₹, and location. Return ONLY a JSON array of objects with keys: category, title, advice. No markdown.";
+      "You are an expert Indian event planner. Based on the event details provided, give exactly 5 specific, practical suggestions to make the event successful and within budget. Each suggestion must include: a category (Venue/Food/Decor/Entertainment/Budget), a short title, and 3-4 sentence actionable advice specific to their guest count, budget in ₹, and location. Return ONLY a JSON array of objects with keys: category, title, advice. No markdown.";
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -24,7 +24,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "anthropic/claude-3.5-sonnet",
+        model: "google/gemini-2.0-flash-001",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: details },
