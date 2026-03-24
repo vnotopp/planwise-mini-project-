@@ -57,51 +57,23 @@ export default function Dashboard() {
           <LiquidChromeBackground size={500} opacity={0.35} className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full z-0" />
           <BudgetHealthScore />
         </GlassCard>
-
-       <GlassCard delay={0.6} className="lg:col-span-2 noise-overlay relative overflow-hidden">
-  {/* Void Background GIF */}
-  <img
-    src="/voidbg.gif"
-    alt=""
-    style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      opacity: 0.25,
-      zIndex: 0,
-      pointerEvents: 'none',
-      mixBlendMode: 'screen',
-    }}
-  />
-  {/* Dark overlay */}
-  <div style={{
-    position: 'absolute',
-    inset: 0,
-    background: 'linear-gradient(135deg, rgba(13,5,30,0.85) 0%, rgba(5,8,16,0.75) 100%)',
-    zIndex: 1,
-  }} />
-  {/* Content */}
-  <div style={{ position: 'relative', zIndex: 2 }}>
-    <h2 className="font-display text-lg font-bold text-foreground mb-4">Debt Snapshot</h2>
-    {debts.length === 0 ? (
-      <p className="text-muted-foreground text-sm">No debts recorded. Add debts in the Debt Manager.</p>
-    ) : (
-      <div className="space-y-3">
-        {debts.slice(0, 5).map((d) => (
-          <div key={d.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0 group hover:border-l-2">
-            <div>
-              <p className="text-sm font-medium text-foreground">{d.name}</p>
-              <p className="text-xs text-muted-foreground font-mono">{d.interestRate}% APR</p>
-            </div>
-            <span className="font-mono font-bold text-primary">{formatCurrency(d.principal)}</span>
+<GlassCard delay={0.6} className="lg:col-span-2 noise-overlay">
+  <h2 className="font-display text-lg font-bold text-foreground mb-4">Debt Snapshot</h2>
+  {debts.length === 0 ? (
+    <p className="text-muted-foreground text-sm">No debts recorded. Add debts in the Debt Manager.</p>
+  ) : (
+    <div className="space-y-3">
+      {debts.slice(0, 5).map((d) => (
+        <div key={d.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0 group hover:border-l-2 ho
+          <div>
+            <p className="text-sm font-medium text-foreground">{d.name}</p>
+            <p className="text-xs text-muted-foreground font-mono">{d.interestRate}% APR</p>
           </div>
-        ))}
-      </div>
-    )}
-  </div>
+          <span className="font-mono font-bold text-primary">{formatCurrency(d.principal)}</span>
+        </div>
+      ))}
+    </div>
+  )}
 </GlassCard>
       </div>
     </div>
