@@ -16,6 +16,22 @@ const EVENT_TYPES = [
   'Festival Celebration', 'Farewell Party', 'Baby Shower', 'Other',
 ];
 
+const FORMALITY_LEVELS = [
+  { value: 'casual', label: '👕 Casual — Relaxed, no dress code' },
+  { value: 'semi-formal', label: '👔 Semi-Formal — Smart casual' },
+  { value: 'formal', label: '🤵 Formal — Elegant, dress code expected' },
+  { value: 'black-tie', label: '👑 Black Tie — Ultra premium luxury' },
+];
+
+const VENUE_TYPES = [
+  { value: 'home', label: '🏠 Home / Personal Space' },
+  { value: 'banquet', label: '🏛️ Rented Banquet Hall' },
+  { value: 'hotel', label: '🏨 Hotel Venue' },
+  { value: 'resort', label: '🌿 Resort / Farmhouse' },
+  { value: 'outdoor', label: '🌳 Outdoor / Garden' },
+  { value: 'undecided', label: '❓ Not Decided Yet' },
+];
+
 const CATEGORY_COLORS: Record<string, string> = {
   Venue: 'bg-accent/20 text-accent border-accent/30',
   Food: 'bg-success/20 text-success border-success/30',
