@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
+import { LiquidChromeBackground } from '@/components/LiquidChromeBackground';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +15,22 @@ import { formatCurrency } from '@/store/useStore';
 const EVENT_TYPES = [
   'Birthday Party', 'Wedding', 'Corporate Event', 'Anniversary',
   'Festival Celebration', 'Farewell Party', 'Baby Shower', 'Other',
+];
+
+const FORMALITY_LEVELS = [
+  { value: 'casual', label: '👕 Casual — Relaxed, no dress code' },
+  { value: 'semi-formal', label: '👔 Semi-Formal — Smart casual' },
+  { value: 'formal', label: '🤵 Formal — Elegant, dress code expected' },
+  { value: 'black-tie', label: '👑 Black Tie — Ultra premium luxury' },
+];
+
+const VENUE_TYPES = [
+  { value: 'home', label: '🏠 Home / Personal Space' },
+  { value: 'banquet', label: '🏛️ Rented Banquet Hall' },
+  { value: 'hotel', label: '🏨 Hotel Venue' },
+  { value: 'resort', label: '🌿 Resort / Farmhouse' },
+  { value: 'outdoor', label: '🌳 Outdoor / Garden' },
+  { value: 'undecided', label: '❓ Not Decided Yet' },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -35,6 +52,8 @@ export function AiEventSuggester() {
   const [guests, setGuests] = useState('');
   const [budget, setBudget] = useState('');
   const [location, setLocation] = useState('');
+  const [formality, setFormality] = useState('');
+  const [venueType, setVenueType] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,6 +71,8 @@ export function AiEventSuggester() {
       `Number of Guests: ${guests}`,
       `Budget: ${formatCurrency(Number(budget))}`,
       location ? `Location: ${location}` : '',
+      formality ? `Formality Level: ${FORMALITY_LEVELS.find(f => f.value === formality)?.label}` : '',
+      venueType ? `Venue Type: ${VENUE_TYPES.find(v => v.value === venueType)?.label}` : '',
       eventDate ? `Event Date: ${eventDate}` : '',
     ].filter(Boolean).join('\n');
 
@@ -70,14 +91,15 @@ export function AiEventSuggester() {
   };
 
   return (
-    <GlassCard delay={0.1} className="border-primary/20">
-      <div className="flex items-center gap-2 mb-1">
+    <GlassCard delay={0.1} className="border-primary/20 relative overflow-hidden">
+      <LiquidChromeBackground size={400} opacity={0.25} className="top-0 right-0 -translate-y-1/4 translate-x-1/4 rounded-full z-0" />
+      <div className="flex items-center gap-2 mb-1 relative z-10">
         <Wand2 className="h-5 w-5 text-primary" />
         <h2 className="font-display text-lg font-bold tracking-tight">AI Event Suggester</h2>
       </div>
-      <p className="text-sm text-muted-foreground mb-5">Get expert suggestions tailored to your event</p>
+      <p className="text-sm text-muted-foreground mb-5 relative z-10">Get expert suggestions tailored to your event</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 relative z-10">
         <div>
           <Label className="label-caps text-muted-foreground">Event Type</Label>
           <Select value={eventType} onValueChange={setEventType}>
@@ -98,6 +120,24 @@ export function AiEventSuggester() {
         <div>
           <Label className="label-caps text-muted-foreground">Location</Label>
           <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Mumbai" className="bg-muted/30 border-border mt-1" />
+        </div>
+        <div>
+          <Label className="label-caps text-muted-foreground">Formality Level</Label>
+          <Select value={formality} onValueChange={setFormality}>
+            <SelectTrigger className="bg-muted/30 border-border mt-1"><SelectValue placeholder="Select formality" /></SelectTrigger>
+            <SelectContent className="bg-card border-border">
+              {FORMALITY_LEVELS.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label className="label-caps text-muted-foreground">Venue Type</Label>
+          <Select value={venueType} onValueChange={setVenueType}>
+            <SelectTrigger className="bg-muted/30 border-border mt-1"><SelectValue placeholder="Select venue type" /></SelectTrigger>
+            <SelectContent className="bg-card border-border">
+              {VENUE_TYPES.map((v) => <SelectItem key={v.value} value={v.value}>{v.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
         <div className="sm:col-span-2">
           <Label className="label-caps text-muted-foreground">Event Date</Label>
