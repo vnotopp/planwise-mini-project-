@@ -1,3 +1,41 @@
+body {
+  position: relative;
+  min-height: 100vh;
+  background-color: #050810;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-image: url('/particle-bg.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.4;
+}
+
+/* Dark overlay so text stays readable */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: linear-gradient(
+    135deg,
+    rgba(5, 8, 16, 0.75) 0%,
+    rgba(5, 8, 16, 0.60) 50%,
+    rgba(5, 8, 16, 0.75) 100%
+  );
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap');
 
 @tailwind base;
