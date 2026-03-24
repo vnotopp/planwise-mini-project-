@@ -138,18 +138,21 @@ export const LiquidChromeBackground = memo(function LiquidChromeBackground({
         opacity: effectiveOpacity,
         willChange: 'transform',
         transition: 'opacity 1s ease',
+        overflow: 'hidden',
+        borderRadius: 'inherit',
       }}
     >
-      <canvas
-        ref={canvasRef}
+      <img
+        src="/chromebg.gif"
+        alt=""
         style={{
           width: '100%',
           height: '100%',
-          filter: 'contrast(150%) brightness(120%) saturate(180%)',
+          objectFit: 'cover',
+          mixBlendMode: 'screen',
+          filter: 'saturate(180%) brightness(120%) contrast(130%)',
         }}
       />
-      {/* Holographic shimmer */}
-      <div className="absolute inset-0 holographic-shimmer rounded-[inherit]" />
     </div>
   );
 });
