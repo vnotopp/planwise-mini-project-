@@ -2,6 +2,7 @@ import { useStore, formatCurrency } from '@/store/useStore';
 import { GlassCard } from '@/components/GlassCard';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { BudgetHealthScore } from '@/components/BudgetHealthScore';
+import { LiquidChromeBackground } from '@/components/LiquidChromeBackground';
 import { motion } from 'framer-motion';
 import { Wallet, TrendingDown, PiggyBank, CreditCard, ArrowUpRight } from 'lucide-react';
 
@@ -52,7 +53,8 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <GlassCard delay={0.5} className="flex flex-col items-center gap-4 lg:col-span-1 noise-overlay">
+        <GlassCard delay={0.5} className="flex flex-col items-center gap-4 lg:col-span-1 noise-overlay relative overflow-hidden">
+          <LiquidChromeBackground size={500} opacity={0.35} className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full z-0" />
           <BudgetHealthScore />
         </GlassCard>
 
