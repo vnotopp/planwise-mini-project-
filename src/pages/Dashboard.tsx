@@ -13,7 +13,7 @@ export default function Dashboard() {
   const { events, debts, monthlySavings } = useStore();
 
   const totalActual = events.reduce((sum, e) => sum + e.resources.reduce((s, r) => s + r.actualCost, 0), 0);
-  const totalBudget = events.reduce((sum, e) => sum + e.budget, 0);
+  const totalBudget = events.reduce((sum, e) => sum + e.budget, 0);\;
   const remaining = totalBudget - totalActual;
   const totalDebt = debts.reduce((sum, d) => sum + d.principal, 0);
   const totalMinPayment = debts.reduce((sum, d) => sum + d.minimumPayment, 0);
