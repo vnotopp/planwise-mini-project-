@@ -13,7 +13,7 @@ export default function Dashboard() {
   const { events, debts, monthlySavings } = useStore();
 
   const totalActual = events.reduce((sum, e) => sum + e.resources.reduce((s, r) => s + r.actualCost, 0), 0);
-  const totalBudget = events.reduce((sum, e) => sum + e.budget, 0);\;
+  const totalBudget = events.reduce((sum, e) => sum + e.budget, 0);
   const remaining = totalBudget - totalActual;
   const totalDebt = debts.reduce((sum, d) => sum + d.principal, 0);
   const totalMinPayment = debts.reduce((sum, d) => sum + d.minimumPayment, 0);
@@ -64,7 +64,7 @@ export default function Dashboard() {
   ) : (
     <div className="space-y-3">
       {debts.slice(0, 5).map((d) => (
-        <div key={d.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0 group hover:border-l-2 ho
+        <div key={d.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0 group hover:border-l-2 hover:border-l-primary transition-all">
           <div>
             <p className="text-sm font-medium text-foreground">{d.name}</p>
             <p className="text-xs text-muted-foreground font-mono">{d.interestRate}% APR</p>
