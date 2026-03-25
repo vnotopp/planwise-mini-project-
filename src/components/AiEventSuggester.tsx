@@ -76,11 +76,15 @@ export function AiEventSuggester() {
       toast.error('Please enter an event name');
       return;
     }
-    const resources = suggestions.map((s) => ({
+    const totalBudget = Number(budget) || 0;
+    const perResource = suggestions.length > 0 ? Math.floor(totalBudget / suggestions.length) : 0;
+    const remainder = totalBudget - perResource * suggestions.length;
+
+    const resources = suggestions.map((s, i) => ({
       id: generateId(),
       name: s.title,
       category: mapCategoryToResource(s.category),
-      estimatedCost: 0,
+      estimatedCost: perResource + (i === 0 ? remainder : 0),
       actualCost: 0,
     }));
     const event = {
@@ -88,12 +92,12 @@ export function AiEventSuggester() {
       name: newEventName.trim(),
       type: eventType,
       date: eventDate || new Date().toISOString().split('T')[0],
-      budget: Number(budget) || 0,
+      budget: totalBudget,
       resources,
     };
     addEvent(event);
     createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, ['#F0B429', '#06B6D4', '#ffffff']);
-    toast.success(`Event "${newEventName}" created with ${resources.length} resources`);
+    toast.success(`Event "${newEventName}" created with ${resources.length} resources and budget allocated`);
     setCreateDialogOpen(false);
     setNewEventName('');
   };

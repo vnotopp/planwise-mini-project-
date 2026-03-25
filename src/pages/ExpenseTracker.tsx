@@ -6,103 +6,141 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
-import { Receipt, Plus, Trash2 } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Receipt, Trash2, Plus, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
-
-const expenseSchema = z.object({
-  eventId: z.string().min(1, 'Select event'),
-  resourceId: z.string().min(1, 'Select resource'),
-  amount: z.coerce.number().min(0),
-  date: z.string().min(1),
-  note: z.string(),
-});
 
 export default function ExpenseTracker() {
   const { events, expenses, addExpense, deleteExpense, updateResource } = useStore();
-  const [dialog, setDialog] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [expenseDialog, setExpenseDialog] = useState<{ eventId: string; resourceId: string } | null>(null);
+  const [amount, setAmount] = useState('');
+  const [date, setDate] = useState('');
+  const [note, setNote] = useState('');
 
-  const form = useForm({ resolver: zodResolver(expenseSchema), defaultValues: { eventId: '', resourceId: '', amount: 0, date: '', note: '' } });
-  const selectedEventId = form.watch('eventId');
-  const selectedEvent = events.find((e) => e.id === selectedEventId);
-
-  const onSubmit = (data: z.infer<typeof expenseSchema>) => {
-    const id = generateId();
-    const { eventId, resourceId, amount, date, note } = data;
-    addExpense({ eventId, resourceId, amount, date, note, id });
-    if (selectedEvent) {
-      const resource = selectedEvent.resources.find((r) => r.id === data.resourceId);
-      if (resource) {
-        updateResource(data.eventId, data.resourceId, { actualCost: resource.actualCost + data.amount });
-      }
+  const handleLogExpense = () => {
+    if (!expenseDialog || !amount || !date) {
+      toast.error('Please fill in amount and date');
+      return;
+    }
+    const { eventId, resourceId } = expenseDialog;
+    const numAmount = Number(amount);
+    addExpense({ id: generateId(), eventId, resourceId, amount: numAmount, date, note });
+    const ev = events.find((e) => e.id === eventId);
+    const resource = ev?.resources.find((r) => r.id === resourceId);
+    if (resource) {
+      updateResource(eventId, resourceId, { actualCost: resource.actualCost + numAmount });
     }
     toast.success('Expense logged');
-    form.reset();
-    setDialog(false);
+    setExpenseDialog(null);
+    setAmount('');
+    setDate('');
+    setNote('');
   };
 
-  const grouped = events.map((ev) => ({
-    event: ev,
-    expenses: expenses.filter((ex) => ex.eventId === ev.id),
-  })).filter((g) => g.expenses.length > 0);
+  const eventsWithResources = events.filter((e) => e.resources.length > 0);
 
   return (
     <div className="space-y-8">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Expense Tracker</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Log actual expenses and compare with estimates</p>
-        </div>
-        <Button onClick={() => { form.reset(); setDialog(true); }} className="btn-primary-gradient text-primary-foreground font-bold" disabled={events.length === 0}>
-          <Plus className="mr-2 h-4 w-4" /> Log Expense
-        </Button>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Expense Tracker</h1>
+        <p className="text-muted-foreground mt-1 text-sm">Click on any resource to log an expense directly</p>
       </motion.div>
 
-      {events.length === 0 ? (
-        <GlassCard>
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Receipt className="h-10 w-10 text-muted-foreground mb-3" />
-            <h3 className="font-display text-lg font-bold text-foreground">No events yet</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Create an event in Event Planner first</p>
-          </div>
-        </GlassCard>
-      ) : grouped.length === 0 ? (
-        <EmptyState icon={Receipt} title="No expenses logged" description="Log expenses against your events to track actual spending." />
+      {eventsWithResources.length === 0 ? (
+        <EmptyState icon={Receipt} title="No events with resources" description="Create an event with resources using the AI Event Planner to start tracking expenses here." />
       ) : (
         <div className="space-y-6">
-          {grouped.map(({ event: ev, expenses: exps }, i) => {
+          {eventsWithResources.map((ev, i) => {
             const totalEst = ev.resources.reduce((s, r) => s + r.estimatedCost, 0);
             const totalAct = ev.resources.reduce((s, r) => s + r.actualCost, 0);
+            const overBudget = totalAct > ev.budget;
+
             return (
               <GlassCard key={ev.id} delay={i * 0.05}>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-display text-lg font-bold text-foreground">{ev.name}</h3>
-                  <div className="flex gap-4 text-sm font-mono">
-                    <span className="text-muted-foreground">Est: {formatCurrency(totalEst)}</span>
-                    <span className={totalAct > totalEst ? 'text-destructive' : 'text-success'}>Act: {formatCurrency(totalAct)}</span>
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <h3 className="font-display text-lg font-bold text-foreground">{ev.name}</h3>
+                    <div className="flex gap-3 mt-1">
+                      <Badge variant="outline" className="border-border text-muted-foreground text-[10px]">{ev.type}</Badge>
+                      <span className="text-xs text-muted-foreground font-mono">{ev.date}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground">Budget: <span className="font-mono text-primary font-bold">{formatCurrency(ev.budget)}</span></p>
+                    <p className={`text-xs font-mono font-bold ${overBudget ? 'text-destructive' : 'text-success'}`}>
+                      Spent: {formatCurrency(totalAct)} / {formatCurrency(totalEst)} est
+                    </p>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  {exps.map((ex) => {
-                    const resource = ev.resources.find((r) => r.id === ex.resourceId);
+
+                {/* Budget gauge */}
+                <div className="mb-4">
+                  <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(100, ev.budget > 0 ? (totalAct / ev.budget) * 100 : 0)}%` }}
+                      transition={{ duration: 1, ease: 'easeOut' }}
+                      className={`h-full rounded-full ${overBudget ? 'bg-destructive' : 'bg-success'}`}
+                    />
+                  </div>
+                </div>
+
+                {/* Resources as clickable cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {ev.resources.map((r) => {
+                    const diff = r.actualCost - r.estimatedCost;
+                    const isOver = diff > 0;
+                    const resourceExpenses = expenses.filter((ex) => ex.eventId === ev.id && ex.resourceId === r.id);
+
                     return (
-                      <div key={ex.id} className="flex items-center justify-between rounded-lg bg-muted/20 px-3 py-2 hover:border-l-2 hover:border-l-primary hover:pl-4 transition-all">
-                        <div>
-                          <p className="text-sm text-foreground">{resource ? `${resource.name} — ${resource.category}` : 'Unknown'}</p>
-                          <p className="text-xs text-muted-foreground font-mono">{ex.date} {ex.note && `— ${ex.note}`}</p>
+                      <div
+                        key={r.id}
+                        className={`rounded-lg bg-muted/20 border border-border p-3 cursor-pointer hover:border-primary/50 hover:-translate-y-0.5 transition-all group ${isOver ? 'border-l-2 border-l-destructive' : 'border-l-2 border-l-success'}`}
+                        onClick={() => { setExpenseDialog({ eventId: ev.id, resourceId: r.id }); setDate(new Date().toISOString().split('T')[0]); }}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="border-border text-[10px] font-mono">{r.category}</Badge>
+                            <span className="text-sm font-medium text-foreground">{r.name}</span>
+                          </div>
+                          <Plus className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono font-bold text-primary">{formatCurrency(ex.amount)}</span>
-                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setDeleteTarget(ex.id)}>
-                            <Trash2 className="h-3 w-3 text-destructive" />
-                          </Button>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-3">
+                            <span className="text-[10px] text-muted-foreground font-mono">Est: {formatCurrency(r.estimatedCost)}</span>
+                            <span className="text-[10px] text-muted-foreground font-mono">Act: {formatCurrency(r.actualCost)}</span>
+                          </div>
+                          <span className={`text-[10px] font-bold font-mono flex items-center gap-1 ${isOver ? 'text-destructive' : 'text-success'}`}>
+                            {isOver ? <AlertTriangle className="h-2.5 w-2.5" /> : <CheckCircle2 className="h-2.5 w-2.5" />}
+                            {diff > 0 ? '+' : ''}{formatCurrency(diff)}
+                          </span>
                         </div>
+
+                        {/* Recent expenses for this resource */}
+                        {resourceExpenses.length > 0 && (
+                          <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
+                            {resourceExpenses.slice(-3).map((ex) => (
+                              <div key={ex.id} className="flex items-center justify-between text-[10px]">
+                                <span className="text-muted-foreground font-mono">{ex.date} {ex.note && `— ${ex.note}`}</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-primary font-mono font-bold">{formatCurrency(ex.amount)}</span>
+                                  <button
+                                    className="text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={(e) => { e.stopPropagation(); setDeleteTarget(ex.id); }}
+                                  >
+                                    <Trash2 className="h-2.5 w-2.5" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                            {resourceExpenses.length > 3 && (
+                              <p className="text-[9px] text-muted-foreground">+{resourceExpenses.length - 3} more</p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -113,43 +151,37 @@ export default function ExpenseTracker() {
         </div>
       )}
 
-      <Dialog open={dialog} onOpenChange={setDialog}>
+      {/* Quick expense dialog */}
+      <Dialog open={!!expenseDialog} onOpenChange={() => setExpenseDialog(null)}>
         <DialogContent className="bg-card border-border">
-          <DialogHeader><DialogTitle className="font-display font-bold">Log Expense</DialogTitle></DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <DialogHeader>
+            <DialogTitle className="font-display font-bold">
+              Log Expense — {(() => {
+                if (!expenseDialog) return '';
+                const ev = events.find((e) => e.id === expenseDialog.eventId);
+                const r = ev?.resources.find((r) => r.id === expenseDialog.resourceId);
+                return r?.name || '';
+              })()}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
             <div>
-              <Label className="label-caps text-muted-foreground">Event</Label>
-              <Select value={selectedEventId} onValueChange={(v) => { form.setValue('eventId', v); form.setValue('resourceId', ''); }}>
-                <SelectTrigger className="bg-muted/30 border-border mt-1"><SelectValue placeholder="Select event" /></SelectTrigger>
-                <SelectContent className="bg-card border-border">
-                  {events.map((ev) => <SelectItem key={ev.id} value={ev.id}>{ev.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Label className="label-caps text-muted-foreground">Amount (₹)</Label>
+              <Input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="bg-muted/30 border-border mt-1" autoFocus />
             </div>
-            {selectedEvent && (
-              <div>
-                <Label className="label-caps text-muted-foreground">Resource</Label>
-                {selectedEvent.resources.length === 0 ? (
-                  <p className="text-xs text-muted-foreground mt-1">No resources in this event. Add resources in Event Planner first.</p>
-                ) : (
-                  <Select value={form.watch('resourceId')} onValueChange={(v) => form.setValue('resourceId', v)}>
-                    <SelectTrigger className="bg-muted/30 border-border mt-1"><SelectValue placeholder="Select resource" /></SelectTrigger>
-                    <SelectContent className="bg-card border-border">
-                      {selectedEvent.resources.map((r) => (
-                        <SelectItem key={r.id} value={r.id}>{r.name} — {r.category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              </div>
-            )}
-            <div><Label className="label-caps text-muted-foreground">Amount (₹)</Label><Input type="number" {...form.register('amount')} className="bg-muted/30 border-border mt-1" /></div>
-            <div><Label className="label-caps text-muted-foreground">Date</Label><Input type="date" {...form.register('date')} className="bg-muted/30 border-border mt-1" /></div>
-            <div><Label className="label-caps text-muted-foreground">Note</Label><Input {...form.register('note')} className="bg-muted/30 border-border mt-1" /></div>
-            <DialogFooter>
-              <Button type="submit" className="btn-primary-gradient text-primary-foreground font-bold">Log</Button>
-            </DialogFooter>
-          </form>
+            <div>
+              <Label className="label-caps text-muted-foreground">Date</Label>
+              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-muted/30 border-border mt-1" />
+            </div>
+            <div>
+              <Label className="label-caps text-muted-foreground">Note (optional)</Label>
+              <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Advance payment" className="bg-muted/30 border-border mt-1" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExpenseDialog(null)} className="border-border">Cancel</Button>
+            <Button onClick={handleLogExpense} className="btn-primary-gradient text-primary-foreground font-bold">Log Expense</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
