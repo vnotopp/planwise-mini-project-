@@ -50,6 +50,7 @@ interface Suggestion {
 }
 
 export function AiEventSuggester() {
+  const { addEvent } = useStore();
   const [eventType, setEventType] = useState('');
   const [guests, setGuests] = useState('');
   const [budget, setBudget] = useState('');
@@ -59,6 +60,43 @@ export function AiEventSuggester() {
   const [eventDate, setEventDate] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [newEventName, setNewEventName] = useState('');
+
+  const mapCategoryToResource = (cat: string): ResourceCategory => {
+    const map: Record<string, ResourceCategory> = {
+      Venue: 'Venue', Food: 'Food', Decor: 'Decor',
+      Entertainment: 'Misc', Budget: 'Misc',
+    };
+    return map[cat] || 'Misc';
+  };
+
+  const handleCreateEvent = () => {
+    if (!newEventName.trim()) {
+      toast.error('Please enter an event name');
+      return;
+    }
+    const resources = suggestions.map((s) => ({
+      id: generateId(),
+      name: s.title,
+      category: mapCategoryToResource(s.category),
+      estimatedCost: 0,
+      actualCost: 0,
+    }));
+    const event = {
+      id: generateId(),
+      name: newEventName.trim(),
+      type: eventType,
+      date: eventDate || new Date().toISOString().split('T')[0],
+      budget: Number(budget) || 0,
+      resources,
+    };
+    addEvent(event);
+    createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, ['#F0B429', '#06B6D4', '#ffffff']);
+    toast.success(`Event "${newEventName}" created with ${resources.length} resources`);
+    setCreateDialogOpen(false);
+    setNewEventName('');
+  };
 
   const getSuggestions = async () => {
     if (!eventType || !guests || !budget) {
@@ -179,8 +217,41 @@ export function AiEventSuggester() {
           <button onClick={getSuggestions} className="flex items-center gap-1 text-xs text-primary hover:text-secondary transition-colors">
             <RefreshCw className="h-3 w-3" /> Regenerate
           </button>
+          <Button
+            onClick={() => { setNewEventName(eventType || 'My Event'); setCreateDialogOpen(true); }}
+            className="w-full btn-primary-gradient text-primary-foreground font-bold h-11 mt-2"
+          >
+            <PlusCircle className="mr-2 h-4 w-4" /> Create Event from Suggestions
+          </Button>
         </div>
       )}
+
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader>
+            <DialogTitle className="font-display font-bold">Name Your Event</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="label-caps text-muted-foreground">Event Name</Label>
+              <Input
+                value={newEventName}
+                onChange={(e) => setNewEventName(e.target.value)}
+                placeholder="e.g. Priya's Wedding Reception"
+                className="bg-muted/30 border-border mt-1"
+                autoFocus
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              This will create an event with {suggestions.length} resources based on the AI suggestions.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateDialogOpen(false)} className="border-border">Cancel</Button>
+            <Button onClick={handleCreateEvent} className="btn-primary-gradient text-primary-foreground font-bold">Create Event</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </GlassCard>
   );
 }
