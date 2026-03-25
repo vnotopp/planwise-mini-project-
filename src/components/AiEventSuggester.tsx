@@ -71,22 +71,50 @@ export function AiEventSuggester() {
     return map[cat] || 'Misc';
   };
 
+  const CATEGORY_WEIGHTS: Record<string, number> = {
+    Venue: 35,
+    Food: 30,
+    Decor: 15,
+    Entertainment: 12,
+    Budget: 8,
+  };
+
   const handleCreateEvent = () => {
     if (!newEventName.trim()) {
       toast.error('Please enter an event name');
       return;
     }
     const totalBudget = Number(budget) || 0;
-    const perResource = suggestions.length > 0 ? Math.floor(totalBudget / suggestions.length) : 0;
-    const remainder = totalBudget - perResource * suggestions.length;
 
-    const resources = suggestions.map((s, i) => ({
-      id: generateId(),
-      name: s.title,
-      category: mapCategoryToResource(s.category),
-      estimatedCost: perResource + (i === 0 ? remainder : 0),
-      actualCost: 0,
-    }));
+    // Smart allocation: weight by category, then distribute evenly within same-category items
+    const categoryCount: Record<string, number> = {};
+    suggestions.forEach(s => {
+      const cat = s.category || 'Budget';
+      categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+    });
+
+    // Calculate total weight of present categories
+    const totalWeight = Object.keys(categoryCount).reduce(
+      (sum, cat) => sum + (CATEGORY_WEIGHTS[cat] || 8), 0
+    );
+
+    const resources = suggestions.map((s) => {
+      const cat = s.category || 'Budget';
+      const catWeight = CATEGORY_WEIGHTS[cat] || 8;
+      const catShare = Math.floor((catWeight / totalWeight) * totalBudget);
+      const perItem = Math.floor(catShare / categoryCount[cat]);
+      return {
+        id: generateId(),
+        name: s.title,
+        category: mapCategoryToResource(cat),
+        estimatedCost: perItem,
+        actualCost: 0,
+      };
+    });
+
+    // Distribute any rounding remainder to the first resource
+    const allocated = resources.reduce((s, r) => s + r.estimatedCost, 0);
+    if (resources.length > 0) resources[0].estimatedCost += totalBudget - allocated;
     const event = {
       id: generateId(),
       name: newEventName.trim(),
