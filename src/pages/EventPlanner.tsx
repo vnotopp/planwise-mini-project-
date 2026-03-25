@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useStore, generateId, formatCurrency, type PlanEvent, type Resource, type ResourceCategory } from '@/store/useStore';
+import { InlineResourceRow } from '@/components/InlineResourceRow';
 import { GlassCard } from '@/components/GlassCard';
 import { AiBudgetAdvisor } from '@/components/AiBudgetAdvisor';
 import { AiEventSuggester } from '@/components/AiEventSuggester';
@@ -36,7 +37,7 @@ const resourceSchema = z.object({
 const CATEGORIES: ResourceCategory[] = ['Food', 'Venue', 'Decor', 'Transport', 'Misc'];
 
 export default function EventPlanner() {
-  const { events, addEvent, updateEvent, deleteEvent, addResource, deleteResource } = useStore();
+  const { events, addEvent, updateEvent, deleteEvent, addResource, updateResource, deleteResource } = useStore();
   const [eventDialog, setEventDialog] = useState(false);
   const [resourceDialog, setResourceDialog] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -166,29 +167,15 @@ export default function EventPlanner() {
                         <p className="text-sm text-muted-foreground">No resources added yet.</p>
                       ) : (
                         <div className="space-y-2">
-                          {ev.resources.map((r) => {
-                            const diff = r.actualCost - r.estimatedCost;
-                            const isOver = diff > 0;
-                            return (
-                              <div key={r.id} className={`flex items-center justify-between rounded-lg bg-muted/20 px-3 py-2 border-l-2 transition-colors ${isOver ? 'border-l-destructive' : 'border-l-success'}`}>
-                                <div className="flex items-center gap-3">
-                                  <Badge variant="outline" className="border-border text-[10px] font-mono">{r.category}</Badge>
-                                  <span className="text-sm text-foreground">{r.name}</span>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <span className="text-xs text-muted-foreground font-mono">Est: {formatCurrency(r.estimatedCost)}</span>
-                                  <span className="text-xs text-muted-foreground font-mono">Act: {formatCurrency(r.actualCost)}</span>
-                                  <span className={`text-xs font-bold font-mono flex items-center gap-1 ${isOver ? 'text-destructive' : 'text-success'}`}>
-                                    {isOver ? <AlertTriangle className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />}
-                                    {diff > 0 ? '+' : ''}{formatCurrency(diff)}
-                                  </span>
-                                  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteResource(ev.id, r.id)}>
-                                    <Trash2 className="h-3 w-3 text-destructive" />
-                                  </Button>
-                                </div>
-                              </div>
-                            );
-                          })}
+                          {ev.resources.map((r) => (
+                            <InlineResourceRow
+                              key={r.id}
+                              resource={r}
+                              eventId={ev.id}
+                              onUpdate={(data) => updateResource(ev.id, r.id, data)}
+                              onDelete={() => deleteResource(ev.id, r.id)}
+                            />
+                          ))}
                         </div>
                       )}
                     </motion.div>
