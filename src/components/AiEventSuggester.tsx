@@ -7,10 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Wand2, RefreshCw } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Wand2, RefreshCw, PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { formatCurrency } from '@/store/useStore';
+import { useStore, generateId, formatCurrency, type ResourceCategory } from '@/store/useStore';
+import { createParticleBurst } from '@/components/SpaceBackground';
 
 const EVENT_TYPES = [
   'Birthday Party', 'Wedding', 'Corporate Event', 'Anniversary',
