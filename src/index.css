@@ -1,42 +1,4 @@
-body {
-  position: relative;
-  min-height: 100vh;
-  background-color: #050810;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  background-image: url('/particlebg.gif');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.4;
-}
-
-/* Dark overlay so text stays readable */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  background: linear-gradient(
-    135deg,
-    rgba(5, 8, 16, 0.75) 0%,
-    rgba(5, 8, 16, 0.60) 50%,
-    rgba(5, 8, 16, 0.75) 100%
-  );
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,12 +9,11 @@ body::after {
     --background: 228 80% 3%;
     --foreground: 210 50% 96%;
 
-    --card: 220 30% 5%;
+    --card: 220 20% 7%;
     --card-foreground: 210 50% 96%;
-
     --card-elevated: 220 20% 10%;
 
-    --popover: 220 30% 5%;
+    --popover: 220 20% 7%;
     --popover-foreground: 210 50% 96%;
 
     --primary: 43 88% 55%;
@@ -67,6 +28,15 @@ body::after {
     --accent: 187 92% 41%;
     --accent-foreground: 228 80% 3%;
 
+    --coral: 0 100% 71%;
+    --coral-foreground: 0 0% 100%;
+
+    --electric: 217 91% 60%;
+    --electric-foreground: 0 0% 100%;
+
+    --emerald: 160 84% 39%;
+    --emerald-foreground: 0 0% 100%;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 50% 96%;
 
@@ -80,7 +50,7 @@ body::after {
     --input: 215 14% 15%;
     --ring: 43 88% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 228 80% 2%;
     --sidebar-foreground: 210 50% 96%;
@@ -91,9 +61,9 @@ body::after {
     --sidebar-border: 215 14% 15%;
     --sidebar-ring: 43 88% 55%;
 
-    --font-display: 'Syne', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
   }
 }
 
@@ -104,40 +74,78 @@ body::after {
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    position: relative;
+    min-height: 100vh;
+    background-color: #050810;
   }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+    background-image: url('/particlebg.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+    background: linear-gradient(
+      135deg,
+      rgba(5, 8, 16, 0.8) 0%,
+      rgba(5, 8, 16, 0.65) 50%,
+      rgba(5, 8, 16, 0.8) 100%
+    );
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     font-weight: 700;
   }
 
-  /* Custom gold scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary) / 0.3);
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary) / 0.5);
-  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--primary) / 0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
 }
 
 @layer components {
-  .glass-card {
+  /* Solid editorial card — no glassmorphism */
+  .editorial-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
-    transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
-  .glass-card:hover {
-    transform: translateY(-2px);
-    border-top: 3px solid hsl(var(--primary));
-    box-shadow: 0 8px 32px hsl(var(--primary) / 0.08), 0 0 0 1px hsl(var(--border));
+  .editorial-card:hover {
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 0 4px 24px hsl(var(--primary) / 0.06);
+  }
+
+  /* Gold decorative rule */
+  .gold-rule {
+    height: 2px;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.2));
+    border: none;
+  }
+
+  /* Section number - decorative */
+  .section-number {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 3rem;
+    line-height: 1;
+    color: hsl(var(--muted-foreground) / 0.15);
+    letter-spacing: -0.04em;
+    user-select: none;
   }
 
   .text-gradient-gold {
@@ -145,10 +153,6 @@ body::after {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-
-  .glow-gold {
-    box-shadow: 0 0 20px hsl(43 88% 55% / 0.15), 0 0 40px hsl(43 88% 55% / 0.05);
   }
 
   .btn-primary-gradient {
@@ -177,20 +181,6 @@ body::after {
     transform: scale(0.98);
   }
 
-  .noise-overlay {
-    position: relative;
-  }
-  .noise-overlay::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    pointer-events: none;
-    border-radius: inherit;
-    z-index: 1;
-  }
-
   .font-amount {
     font-family: var(--font-mono);
     color: hsl(var(--primary));
@@ -203,64 +193,15 @@ body::after {
     letter-spacing: 0.08em;
     font-size: 0.625rem;
   }
-}
 
-@layer components {
-  .holographic-shimmer {
-    background: linear-gradient(
-      105deg,
-      transparent 20%,
-      rgba(255,255,255,0.08) 30%,
-      rgba(0,255,255,0.05) 40%,
-      rgba(255,215,0,0.05) 50%,
-      rgba(155,89,182,0.05) 60%,
-      transparent 70%
-    );
-    background-size: 300% 300%;
-    animation: holographicShift 4s ease infinite;
-  }
-
-  @keyframes holographicShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  .chrome-container {
-    border-radius: inherit;
-    overflow: hidden;
-  }
-
-  .chrome-container::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: inherit;
-    filter: blur(8px) hue-rotate(90deg);
-    opacity: 0.4;
-    mix-blend-mode: screen;
-  }
-
-  .chrome-container::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow:
-      inset 0 0 60px rgba(0,255,255,0.15),
-      inset 0 0 120px rgba(255,215,0,0.08),
-      0 0 80px rgba(155,89,182,0.2);
-  }
+  /* Legacy compat — keep these for components that still use them */
+  .glass-card { @apply editorial-card; }
+  .noise-overlay { position: relative; }
+  .glow-gold { box-shadow: 0 0 20px hsl(43 88% 55% / 0.1); }
 }
 
 @layer utilities {
-  .font-display {
-    font-family: var(--font-display);
-  }
-  .font-body {
-    font-family: var(--font-body);
-  }
-  .font-mono {
-    font-family: var(--font-mono);
-  }
+  .font-display { font-family: var(--font-display); }
+  .font-body { font-family: var(--font-body); }
+  .font-mono { font-family: var(--font-mono); }
 }
