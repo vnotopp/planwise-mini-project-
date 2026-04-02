@@ -93,8 +93,6 @@ export default function EventPlanner() {
         </Button>
       </motion.div>
       <hr className="gold-rule" />
-        </Button>
-      </motion.div>
 
       {/* AI Event Suggester */}
       <AiEventSuggester />
