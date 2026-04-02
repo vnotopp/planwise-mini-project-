@@ -81,9 +81,12 @@ export default function EventPlanner() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Event Planner</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Plan and manage your event budgets</p>
+        <div className="flex items-end gap-4">
+          <span className="section-number text-accent/20">01</span>
+          <div>
+            <h1 className="font-display text-4xl font-extrabold text-foreground" style={{ letterSpacing: '-0.03em' }}>Event Planner</h1>
+            <p className="text-muted-foreground mt-1 text-sm">Plan and manage your event budgets</p>
+          </div>
         </div>
         <Button onClick={() => { setEditEvent(null); eventForm.reset(); setEventDialog(true); }} className="btn-primary-gradient text-primary-foreground font-bold">
           <Plus className="mr-2 h-4 w-4" /> New Event

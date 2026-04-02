@@ -44,9 +44,15 @@ export default function ExpenseTracker() {
 
   return (
     <div className="space-y-8">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Expense Tracker</h1>
-        <p className="text-muted-foreground mt-1 text-sm">Click on any resource to log an expense directly</p>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+        <div className="flex items-end gap-4">
+          <span className="section-number text-electric/20">01</span>
+          <div>
+            <h1 className="font-display text-4xl font-extrabold text-foreground" style={{ letterSpacing: '-0.03em' }}>Expense Tracker</h1>
+            <p className="text-muted-foreground mt-1 text-sm">Click on any resource to log an expense directly</p>
+          </div>
+        </div>
+        <hr className="gold-rule" />
       </motion.div>
 
       {eventsWithResources.length === 0 ? (
