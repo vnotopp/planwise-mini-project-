@@ -111,6 +111,8 @@ export default function DebtManager() {
           <Plus className="mr-2 h-4 w-4" /> Add Debt
         </Button>
       </motion.div>
+      <hr className="gold-rule" />
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <GlassCard>
