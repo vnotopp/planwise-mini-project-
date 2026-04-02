@@ -67,9 +67,15 @@ export default function Reports() {
 
   return (
     <div className="space-y-8">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="font-display text-3xl font-extrabold text-foreground tracking-tight" style={{ letterSpacing: '-0.02em' }}>Reports</h1>
-        <p className="text-muted-foreground mt-1 text-sm">Visual analysis of your budgets and debt</p>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+        <div className="flex items-end gap-4">
+          <span className="section-number text-emerald/20">01</span>
+          <div>
+            <h1 className="font-display text-4xl font-extrabold text-foreground" style={{ letterSpacing: '-0.03em' }}>Reports</h1>
+            <p className="text-muted-foreground mt-1 text-sm">Visual analysis of your budgets and debt</p>
+          </div>
+        </div>
+        <hr className="gold-rule" />
       </motion.div>
 
       {!hasData ? (
