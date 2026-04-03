@@ -11,6 +11,7 @@ const ICONS = [Wallet, ArrowUpRight, PiggyBank, CreditCard, TrendingDown];
 
 export default function Dashboard() {
   const { events, debts, monthlySavings } = useStore();
+  const { savedServices } = useMarketplaceStore();
 
   const totalActual = events.reduce((sum, e) => sum + e.resources.reduce((s, r) => s + r.actualCost, 0), 0);
   const totalBudget = events.reduce((sum, e) => sum + e.budget, 0);
