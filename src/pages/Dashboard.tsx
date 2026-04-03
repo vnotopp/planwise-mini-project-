@@ -1,9 +1,11 @@
 import { useStore, formatCurrency } from '@/store/useStore';
+import { useMarketplaceStore } from '@/store/marketplaceStore';
 import { GlassCard } from '@/components/GlassCard';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { BudgetHealthScore } from '@/components/BudgetHealthScore';
 import { motion } from 'framer-motion';
-import { Wallet, TrendingDown, PiggyBank, CreditCard, ArrowUpRight } from 'lucide-react';
+import { Wallet, TrendingDown, PiggyBank, CreditCard, ArrowUpRight, ShoppingBag, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ICONS = [Wallet, ArrowUpRight, PiggyBank, CreditCard, TrendingDown];
 
