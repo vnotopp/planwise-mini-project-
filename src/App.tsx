@@ -10,6 +10,7 @@ import EventPlanner from "./pages/EventPlanner";
 import ExpenseTracker from "./pages/ExpenseTracker";
 import DebtManager from "./pages/DebtManager";
 import Reports from "./pages/Reports";
+import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ function AnimatedRoutes() {
           <Route path="/expenses" element={<ExpenseTracker />} />
           <Route path="/debts" element={<DebtManager />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>

@@ -1,14 +1,17 @@
 import { useStore, formatCurrency } from '@/store/useStore';
+import { useMarketplaceStore } from '@/store/marketplaceStore';
 import { GlassCard } from '@/components/GlassCard';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { BudgetHealthScore } from '@/components/BudgetHealthScore';
 import { motion } from 'framer-motion';
-import { Wallet, TrendingDown, PiggyBank, CreditCard, ArrowUpRight } from 'lucide-react';
+import { Wallet, TrendingDown, PiggyBank, CreditCard, ArrowUpRight, ShoppingBag, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ICONS = [Wallet, ArrowUpRight, PiggyBank, CreditCard, TrendingDown];
 
 export default function Dashboard() {
   const { events, debts, monthlySavings } = useStore();
+  const { savedServices } = useMarketplaceStore();
 
   const totalActual = events.reduce((sum, e) => sum + e.resources.reduce((s, r) => s + r.actualCost, 0), 0);
   const totalBudget = events.reduce((sum, e) => sum + e.budget, 0);
@@ -92,6 +95,22 @@ export default function Dashboard() {
           <BudgetHealthScore />
         </GlassCard>
       </div>
+
+      {/* Marketplace Widget */}
+      <GlassCard delay={0.25}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <ShoppingBag className="h-5 w-5 text-coral" />
+            <div>
+              <h3 className="font-display font-bold text-foreground text-sm">Marketplace</h3>
+              <p className="text-xs text-muted-foreground">
+                <Heart className="h-3 w-3 inline mr-1 text-coral" />{savedServices.length} saved services
+              </p>
+            </div>
+          </div>
+          <Link to="/marketplace" className="text-xs text-coral font-medium hover:underline">Browse →</Link>
+        </div>
+      </GlassCard>
     </div>
   );
 }

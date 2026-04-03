@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2, AlertTriangle, CheckCircle2, Pencil, Check, X } from 'lucide-react';
+import { Trash2, AlertTriangle, CheckCircle2, Pencil, Check, X, ShoppingBag } from 'lucide-react';
 import { formatCurrency, type Resource } from '@/store/useStore';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   resource: Resource;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function InlineResourceRow({ resource: r, onUpdate, onDelete }: Props) {
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [est, setEst] = useState(r.estimatedCost.toString());
   const [act, setAct] = useState(r.actualCost.toString());
@@ -84,6 +86,9 @@ export function InlineResourceRow({ resource: r, onUpdate, onDelete }: Props) {
             </Button>
             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onDelete}>
               <Trash2 className="h-3 w-3 text-destructive" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-6 w-6" title="Find Providers" onClick={() => navigate('/marketplace')}>
+              <ShoppingBag className="h-3 w-3 text-coral" />
             </Button>
           </>
         )}
