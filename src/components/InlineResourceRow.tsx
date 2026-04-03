@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2, AlertTriangle, CheckCircle2, Pencil, Check, X } from 'lucide-react';
+import { Trash2, AlertTriangle, CheckCircle2, Pencil, Check, X, ShoppingBag } from 'lucide-react';
 import { formatCurrency, type Resource } from '@/store/useStore';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   resource: Resource;
