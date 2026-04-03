@@ -10,6 +10,7 @@ import EventPlanner from "./pages/EventPlanner";
 import ExpenseTracker from "./pages/ExpenseTracker";
 import DebtManager from "./pages/DebtManager";
 import Reports from "./pages/Reports";
+import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
