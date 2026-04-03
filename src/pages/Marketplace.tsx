@@ -93,7 +93,7 @@ export default function Marketplace() {
                 { label: 'Events Served', value: 10000 },
               ].map((s) => (
                 <div key={s.label} className="text-center">
-                  <AnimatedCounter value={s.value} className="font-mono text-2xl font-bold text-primary block" suffix="+" />
+                  <AnimatedCounter value={s.value} className="font-mono text-2xl font-bold text-primary block" isCurrency={false} />
                   <span className="text-[11px] text-muted-foreground">{s.label}</span>
                 </div>
               ))}
