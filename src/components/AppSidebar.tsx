@@ -1,4 +1,4 @@
-import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
 import {
