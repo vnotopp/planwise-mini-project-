@@ -95,6 +95,22 @@ export default function Dashboard() {
           <BudgetHealthScore />
         </GlassCard>
       </div>
+
+      {/* Marketplace Widget */}
+      <GlassCard delay={0.25}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <ShoppingBag className="h-5 w-5 text-coral" />
+            <div>
+              <h3 className="font-display font-bold text-foreground text-sm">Marketplace</h3>
+              <p className="text-xs text-muted-foreground">
+                <Heart className="h-3 w-3 inline mr-1 text-coral" />{savedServices.length} saved services
+              </p>
+            </div>
+          </div>
+          <Link to="/marketplace" className="text-xs text-coral font-medium hover:underline">Browse →</Link>
+        </div>
+      </GlassCard>
     </div>
   );
 }
