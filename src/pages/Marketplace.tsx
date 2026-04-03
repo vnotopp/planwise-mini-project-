@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Label } from '@/components/ui/label';
 import { Search, SlidersHorizontal, LayoutGrid, List, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { formatCurrency } from '@/store/useStore';
 
