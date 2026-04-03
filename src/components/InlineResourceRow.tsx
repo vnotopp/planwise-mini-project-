@@ -15,6 +15,7 @@ interface Props {
 }
 
 export function InlineResourceRow({ resource: r, onUpdate, onDelete }: Props) {
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [est, setEst] = useState(r.estimatedCost.toString());
   const [act, setAct] = useState(r.actualCost.toString());
