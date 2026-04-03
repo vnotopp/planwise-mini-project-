@@ -87,6 +87,9 @@ export function InlineResourceRow({ resource: r, onUpdate, onDelete }: Props) {
             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onDelete}>
               <Trash2 className="h-3 w-3 text-destructive" />
             </Button>
+            <Button variant="ghost" size="icon" className="h-6 w-6" title="Find Providers" onClick={() => navigate('/marketplace')}>
+              <ShoppingBag className="h-3 w-3 text-coral" />
+            </Button>
           </>
         )}
       </div>
