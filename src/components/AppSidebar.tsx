@@ -12,6 +12,7 @@ const navItems = [
   { title: 'Expense Tracker', url: '/expenses', icon: Receipt },
   { title: 'Debt Manager', url: '/debts', icon: Landmark },
   { title: 'Reports', url: '/reports', icon: BarChart3 },
+  { title: 'Marketplace', url: '/marketplace', icon: ShoppingBag },
 ];
 
 export function AppSidebar() {

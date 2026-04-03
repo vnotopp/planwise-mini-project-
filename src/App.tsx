@@ -32,6 +32,7 @@ function AnimatedRoutes() {
           <Route path="/expenses" element={<ExpenseTracker />} />
           <Route path="/debts" element={<DebtManager />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
