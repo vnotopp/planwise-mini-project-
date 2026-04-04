@@ -124,7 +124,7 @@ export function AiEventSuggester() {
       resources,
     };
     addEvent(event);
-    createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, ['#F0B429', '#06B6D4', '#ffffff']);
+    
     toast.success(`Event "${newEventName}" created with ${resources.length} resources and budget allocated`);
     setCreateDialogOpen(false);
     setNewEventName('');
