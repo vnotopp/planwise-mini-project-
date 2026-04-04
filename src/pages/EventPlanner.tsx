@@ -56,7 +56,7 @@ export default function EventPlanner() {
       addEvent({ name, type, date, budget, id: generateId(), resources: [] });
       toast.success('Event created');
       // Confetti burst
-      createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, ['#F0B429', '#06B6D4', '#ffffff']);
+      // Particle burst removed
     }
     eventForm.reset();
     setEditEvent(null);

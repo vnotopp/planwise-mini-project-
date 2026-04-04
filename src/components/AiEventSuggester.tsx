@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
-import { LiquidChromeBackground } from '@/components/LiquidChromeBackground';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import { Wand2, RefreshCw, PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useStore, generateId, formatCurrency, type ResourceCategory } from '@/store/useStore';
-import { createParticleBurst } from '@/components/SpaceBackground';
+
 
 const EVENT_TYPES = [
   'Birthday Party', 'Wedding', 'Corporate Event', 'Anniversary',
@@ -124,7 +124,7 @@ export function AiEventSuggester() {
       resources,
     };
     addEvent(event);
-    createParticleBurst(window.innerWidth / 2, window.innerHeight / 2, ['#F0B429', '#06B6D4', '#ffffff']);
+    
     toast.success(`Event "${newEventName}" created with ${resources.length} resources and budget allocated`);
     setCreateDialogOpen(false);
     setNewEventName('');
@@ -163,8 +163,8 @@ export function AiEventSuggester() {
   };
 
   return (
-    <GlassCard delay={0.1} className="border-primary/20 relative overflow-hidden">
-      <LiquidChromeBackground size={400} opacity={0.25} className="top-0 right-0 -translate-y-1/4 translate-x-1/4 rounded-full z-0" />
+    <GlassCard delay={0.1} className="border-primary/20">
+      
       <div className="flex items-center gap-2 mb-1 relative z-10">
         <Wand2 className="h-5 w-5 text-primary" />
         <h2 className="font-display text-lg font-bold tracking-tight">AI Event Suggester</h2>
