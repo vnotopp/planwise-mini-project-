@@ -92,7 +92,7 @@ export default function EventPlanner() {
           <Plus className="mr-2 h-4 w-4" /> New Event
         </Button>
       </motion.div>
-      <hr className="gold-rule" />
+    
 
       {/* AI Event Suggester */}
       <AiEventSuggester />
