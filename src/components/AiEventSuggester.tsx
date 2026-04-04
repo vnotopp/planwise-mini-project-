@@ -12,7 +12,7 @@ import { Wand2, RefreshCw, PlusCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useStore, generateId, formatCurrency, type ResourceCategory } from '@/store/useStore';
-import { createParticleBurst } from '@/components/SpaceBackground';
+
 
 const EVENT_TYPES = [
   'Birthday Party', 'Wedding', 'Corporate Event', 'Anniversary',
