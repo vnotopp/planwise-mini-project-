@@ -163,7 +163,7 @@ export function AiEventSuggester() {
   };
 
   return (
-    <GlassCard delay={0.1} className="border-primary/20 relative overflow-hidden">
+    <GlassCard delay={0.1} className="border-primary/20">
       
       <div className="flex items-center gap-2 mb-1 relative z-10">
         <Wand2 className="h-5 w-5 text-primary" />
