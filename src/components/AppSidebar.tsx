@@ -16,10 +16,21 @@ const navItems = [
   { title: 'Marketplace', url: '/marketplace', icon: ShoppingBag },
 ];
 
-export function AppSidebar() {
+const roleLabels: Record<string, string> = {
+  'event-planner': 'Event Planner',
+  'budget-manager': 'Budget Manager',
+  'financial-analyst': 'Financial Analyst',
+  'all': 'All Roles',
+};
+
+export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const { events, debts, monthlyIncome, monthlySavings } = useStore();
+  const user = getUserSetup();
+  const userName = user?.name ?? 'User';
+  const userRole = user?.role ? (roleLabels[user.role] ?? user.role) : 'Getting Started';
+  const userInitial = userName.charAt(0).toUpperCase();
 
   const totalBudget = events.reduce((s, e) => s + e.budget, 0);
   const totalActual = events.reduce((s, e) => s + e.resources.reduce((a, r) => a + r.actualCost, 0), 0);
