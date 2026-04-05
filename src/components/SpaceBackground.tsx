@@ -138,7 +138,7 @@ export function SpaceBackground() {
   }, [initStars, isMobile]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: -1 }}>
+    <div className="fixed inset-0 pointer-events-none dark:block hidden" style={{ zIndex: -1 }}>
       <canvas ref={canvasRef} className="absolute inset-0" />
 
       {/* Floating Orbs */}
@@ -148,7 +148,7 @@ export function SpaceBackground() {
       />
       <div
         className="absolute bottom-[-10%] right-[-5%] w-[300px] h-[300px] rounded-full animate-float-reverse will-change-transform"
-        style={{ background: 'radial-gradient(circle, hsl(270 50% 26%), transparent)', filter: 'blur(80px)', opacity: 0.25 }}
+        style={{ background: 'radial-gradient(circle, hsl(212 50% 20%), transparent)', filter: 'blur(80px)', opacity: 0.25 }}
       />
       <div
         className="absolute top-[30%] right-[10%] w-[250px] h-[250px] rounded-full animate-pulse-slow will-change-transform"
@@ -169,7 +169,7 @@ export function SpaceBackground() {
           <div
             className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2"
             style={{
-              background: 'radial-gradient(ellipse, hsl(240 40% 14%) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse, hsl(212 40% 14%) 0%, transparent 70%)',
               opacity: 0.12,
               animation: 'spin 60s linear infinite reverse',
             }}
@@ -177,7 +177,6 @@ export function SpaceBackground() {
         </div>
       )}
 
-      {/* Gradient mesh on Dashboard */}
       {isDashboard && (
         <div
           className="absolute top-0 left-0 w-full h-[50vh]"
