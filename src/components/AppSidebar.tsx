@@ -1,6 +1,7 @@
-import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
+import { getUserSetup } from '@/components/OnboardingModal';
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -15,10 +16,21 @@ const navItems = [
   { title: 'Marketplace', url: '/marketplace', icon: ShoppingBag },
 ];
 
-export function AppSidebar() {
+const roleLabels: Record<string, string> = {
+  'event-planner': 'Event Planner',
+  'budget-manager': 'Budget Manager',
+  'financial-analyst': 'Financial Analyst',
+  'all': 'All Roles',
+};
+
+export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const { events, debts, monthlyIncome, monthlySavings } = useStore();
+  const user = getUserSetup();
+  const userName = user?.name ?? 'User';
+  const userRole = user?.role ? (roleLabels[user.role] ?? user.role) : 'Getting Started';
+  const userInitial = userName.charAt(0).toUpperCase();
 
   const totalBudget = events.reduce((s, e) => s + e.budget, 0);
   const totalActual = events.reduce((s, e) => s + e.resources.reduce((a, r) => a + r.actualCost, 0), 0);
@@ -60,18 +72,18 @@ export function AppSidebar() {
         {!collapsed && (
           <div className="mt-5 flex items-center gap-3 rounded-lg bg-muted/30 p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-sm shrink-0">
-              V
+              {userInitial}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Vedant</p>
-              <p className="text-[10px] text-muted-foreground">Event Planner</p>
+              <p className="text-sm font-medium text-foreground truncate">{userName}</p>
+              <p className="text-[10px] text-muted-foreground">{userRole}</p>
             </div>
           </div>
         )}
         {collapsed && (
           <div className="mt-3 flex justify-center">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-xs">
-              V
+              {userInitial}
             </div>
           </div>
         )}
@@ -110,8 +122,14 @@ export function AppSidebar() {
             <span className="ml-auto font-mono text-xs text-primary font-bold">{quickScore}</span>
           </div>
         )}
-        <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-2 px-3'}`}>
+        <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3 px-3'}`}>
           <Settings className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
+          {!collapsed && onEditProfile && (
+            <button onClick={onEditProfile} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+              <UserPen className="h-3.5 w-3.5" />
+              <span>Edit Profile</span>
+            </button>
+          )}
         </div>
       </SidebarFooter>
     </Sidebar>
