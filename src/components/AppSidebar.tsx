@@ -1,6 +1,7 @@
-import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
+import { getUserSetup } from '@/components/OnboardingModal';
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
