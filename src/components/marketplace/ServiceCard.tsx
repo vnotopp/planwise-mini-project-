@@ -1,4 +1,4 @@
-import { Heart, MapPin, Clock, Star, CheckCircle2 } from 'lucide-react';
+import { Heart, MapPin, Clock, Star, CheckCircle2, Camera, Utensils, Palette, Music, Building, Flower2, Briefcase, BarChart2, FileText, Mic, Video, Tent } from 'lucide-react';
 import { type ServiceListing, useMarketplaceStore } from '@/store/marketplaceStore';
 import { formatCurrency } from '@/store/useStore';
 import { motion } from 'framer-motion';
@@ -18,12 +18,12 @@ const categoryGradients: Record<string, string> = {
   'Entertainment': 'linear-gradient(135deg, #1a1a0a, #2e2e14)',
 };
 
-const categoryIcons: Record<string, string> = {
-  'Photography': '📸', 'Catering': '🎂', 'Decoration': '🎨',
-  'DJ & Music': '🎵', 'Venue': '🏛️', 'Flowers': '💐',
-  'Financial Advisor': '💼', 'Budget Planner': '📊',
-  'Tax Consultant': '🧾', 'Anchor/Emcee': '🎤',
-  'Videography': '🎬', 'Entertainment': '🎪',
+const categoryIcons: Record<string, any> = {
+  'Photography': Camera, 'Catering': Utensils, 'Decoration': Palette,
+  'DJ & Music': Music, 'Venue': Building, 'Flowers': Flower2,
+  'Financial Advisor': Briefcase, 'Budget Planner': BarChart2,
+  'Tax Consultant': FileText, 'Anchor/Emcee': Mic,
+  'Videography': Video, 'Entertainment': Tent,
 };
 
 interface Props {
@@ -35,6 +35,7 @@ interface Props {
 export function ServiceCard({ listing, index, onClick }: Props) {
   const { savedServices, toggleSaved } = useMarketplaceStore();
   const isSaved = savedServices.includes(listing.id);
+  const Icon = categoryIcons[listing.category] || Camera;
 
   return (
     <motion.div
@@ -49,13 +50,13 @@ export function ServiceCard({ listing, index, onClick }: Props) {
         className="relative h-[180px] flex items-center justify-center"
         style={{ background: categoryGradients[listing.category] || categoryGradients['Photography'] }}
       >
-        <span className="text-5xl opacity-80 drop-shadow-lg">{categoryIcons[listing.category] || '📦'}</span>
-        <span className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-background/80 text-foreground px-2 py-1 rounded">
+        <Icon className="h-12 w-12 text-white/80 drop-shadow-lg" />
+        <span className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase tracking-wider bg-background/80 text-foreground px-2 py-1 rounded-md">
           {listing.category}
         </span>
         <button
           onClick={(e) => { e.stopPropagation(); toggleSaved(listing.id); }}
-          className="absolute top-3 right-3 h-8 w-8 flex items-center justify-center rounded-full bg-background/60 hover:bg-background/90 transition-colors"
+          className="absolute top-3 right-3 h-8 w-8 flex items-center justify-center rounded-md bg-background/60 hover:bg-background/90 transition-colors"
         >
           <Heart className={`h-4 w-4 ${isSaved ? 'fill-coral text-coral' : 'text-foreground'}`} />
         </button>
@@ -89,7 +90,10 @@ export function ServiceCard({ listing, index, onClick }: Props) {
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5">
           {listing.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="text-[11px] px-2 py-0.5 rounded-full bg-coral/10 text-coral font-medium">{tag}</span>
+            <span key={tag} className="text-[11px] px-2 py-0.5 rounded-md flex items-center gap-1 bg-coral/10 text-coral font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-coral inline-block" />
+              {tag}
+            </span>
           ))}
         </div>
 
@@ -107,7 +111,7 @@ export function ServiceCard({ listing, index, onClick }: Props) {
             {listing.priceType !== 'Per Event' && <span className="text-xs text-muted-foreground ml-1">/{listing.priceType.replace('Per ', '')}</span>}
           </div>
           <button className="px-4 py-2 bg-coral text-coral-foreground text-sm font-bold rounded-md hover:bg-coral/90 transition-colors">
-            Hire Now →
+            Hire Now
           </button>
         </div>
       </div>

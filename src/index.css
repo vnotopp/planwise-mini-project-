@@ -65,21 +65,82 @@
     --font-body: 'DM Sans', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
+
+  .light {
+    --background: 220 14% 96%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --card-elevated: 220 14% 98%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 37 92% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 36 90% 44%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 14% 92%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 187 92% 41%;
+    --accent-foreground: 0 0% 100%;
+
+    --coral: 0 100% 71%;
+    --coral-foreground: 0 0% 100%;
+
+    --electric: 217 91% 60%;
+    --electric-foreground: 0 0% 100%;
+
+    --emerald: 160 84% 39%;
+    --emerald-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 43 96% 56%;
+    --warning-foreground: 222 47% 11%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 37 92% 50%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 37 92% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 100% 96%;
+    --sidebar-accent-foreground: 37 92% 50%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 37 92% 50%;
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     position: relative;
     min-height: 100vh;
+  }
+
+  .dark body,
+  :root:not(.light) body {
     background-color: #050810;
   }
 
-  body::before {
+  .dark body::before,
+  :root:not(.light) body::before {
     content: '';
     position: fixed;
     top: 0; left: 0;
@@ -92,7 +153,8 @@
     opacity: 0.3;
   }
 
-  body::after {
+  .dark body::after,
+  :root:not(.light) body::after {
     content: '';
     position: fixed;
     top: 0; left: 0;
@@ -109,6 +171,16 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  h1 {
+    letter-spacing: -0.03em;
+    font-weight: 800;
+  }
+
+  p, li, span {
+    line-height: 1.65;
   }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -118,11 +190,10 @@
 }
 
 @layer components {
-  /* Solid editorial card — no glassmorphism */
   .editorial-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
+    border-radius: 8px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .editorial-card:hover {
@@ -130,52 +201,44 @@
     box-shadow: 0 4px 24px hsl(var(--primary) / 0.06);
   }
 
-  /* Gold decorative rule */
+  .light .editorial-card {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+  .light .editorial-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
   .gold-rule {
     height: 2px;
     background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.2));
     border: none;
   }
 
-  /* Section number - decorative */
   .section-number {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 3rem;
+    font-size: 4rem;
     line-height: 1;
-    color: hsl(var(--muted-foreground) / 0.15);
+    color: hsl(var(--primary) / 0.12);
     letter-spacing: -0.04em;
     user-select: none;
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(43 88% 55%), hsl(36 90% 44%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: hsl(var(--primary));
   }
 
   .btn-primary-gradient {
-    background: linear-gradient(135deg, hsl(43 88% 55%), hsl(36 90% 44%));
-    position: relative;
-    overflow: hidden;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: 6px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: background-color 0.2s ease, transform 0.15s ease;
   }
-  .btn-primary-gradient::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      105deg,
-      transparent 40%,
-      rgba(255,255,255,0.15) 45%,
-      rgba(255,255,255,0.15) 55%,
-      transparent 60%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.6s ease;
-  }
-  .btn-primary-gradient:hover::after {
-    transform: translateX(100%);
+  .btn-primary-gradient:hover {
+    background: hsl(var(--secondary));
+    transform: translateY(-1px);
   }
   .btn-primary-gradient:active {
     transform: scale(0.98);
@@ -184,6 +247,7 @@
   .font-amount {
     font-family: var(--font-mono);
     color: hsl(var(--primary));
+    font-variant-numeric: tabular-nums;
   }
 
   .label-caps {
@@ -191,10 +255,9 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
   }
 
-  /* Legacy compat — keep these for components that still use them */
   .glass-card { @apply editorial-card; }
   .noise-overlay { position: relative; }
   .glow-gold { box-shadow: 0 0 20px hsl(43 88% 55% / 0.1); }
@@ -203,7 +266,7 @@
 @layer utilities {
   .font-display { font-family: var(--font-display); }
   .font-body { font-family: var(--font-body); }
-  .font-mono { font-family: var(--font-mono); }
+  .font-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;

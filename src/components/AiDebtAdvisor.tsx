@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Building2, CheckCircle2, TrendingUp, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { createParticleBurst } from '@/components/SpaceBackground';
 
 interface DebtPlan {
   strategy: string;
@@ -21,12 +20,11 @@ export function AiDebtAdvisor() {
   const [plan, setPlan] = useState<DebtPlan | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const generate = async (e?: React.MouseEvent) => {
+  const generate = async () => {
     if (debts.length === 0) {
       toast.error('Add debts first to get a plan');
       return;
     }
-    if (e) createParticleBurst(e.clientX, e.clientY, ['#F0B429']);
     setLoading(true);
     setPlan(null);
 
@@ -66,7 +64,7 @@ export function AiDebtAdvisor() {
     <GlassCard delay={0.35} className="border-primary/20">
       <div className="flex items-center gap-2 mb-1">
         <Building2 className="h-5 w-5 text-primary" />
-        <h2 className="font-display text-lg font-bold">🏦 AI Debt Minimizer</h2>
+        <h2 className="font-display text-lg font-bold">AI Debt Minimizer</h2>
       </div>
       <p className="text-sm text-muted-foreground mb-4">Your personalized path to financial freedom</p>
 

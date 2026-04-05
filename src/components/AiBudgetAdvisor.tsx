@@ -6,7 +6,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { createParticleBurst } from '@/components/SpaceBackground';
 
 interface Tip {
   tip: string;
@@ -20,13 +19,11 @@ export function AiBudgetAdvisor() {
 
   const hasResources = events.some((e) => e.resources.length > 0);
 
-  const analyze = async (e?: React.MouseEvent) => {
+  const analyze = async () => {
     if (!hasResources) {
       toast.error('Add resources to your events first');
       return;
     }
-    // Particle burst
-    if (e) createParticleBurst(e.clientX, e.clientY, ['#F0B429']);
     setLoading(true);
     setTips([]);
 
@@ -57,7 +54,7 @@ export function AiBudgetAdvisor() {
     <GlassCard delay={0.3} className="border-primary/20">
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="h-5 w-5 text-primary" />
-        <h2 className="font-display text-lg font-bold">✨ AI Budget Minimizer</h2>
+        <h2 className="font-display text-lg font-bold">AI Budget Minimizer</h2>
       </div>
       <p className="text-sm text-muted-foreground mb-4">Get personalized suggestions to reduce your event costs</p>
 

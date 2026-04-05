@@ -2,6 +2,7 @@ import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, S
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
 import { getUserSetup } from '@/components/OnboardingModal';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -68,7 +69,6 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
           )}
         </div>
 
-        {/* User avatar section */}
         {!collapsed && (
           <div className="mt-5 flex items-center gap-3 rounded-lg bg-muted/30 p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-sm shrink-0">
@@ -101,10 +101,10 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
                       to={item.url}
                       end={item.url === '/'}
                       className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
-                      activeClassName="bg-card-elevated text-primary font-medium border-l-2 border-primary"
+                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-[3px] border-l-primary"
                     >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.5} />
+                      {!collapsed && <span className="text-[14px] font-medium" style={{ letterSpacing: '0.01em' }}>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -122,14 +122,17 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
             <span className="ml-auto font-mono text-xs text-primary font-bold">{quickScore}</span>
           </div>
         )}
-        <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3 px-3'}`}>
-          <Settings className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
+        <div className={`flex items-center ${collapsed ? 'flex-col gap-2' : 'gap-3 px-3'}`}>
+          <Settings className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-pointer transition-colors shrink-0" />
           {!collapsed && onEditProfile && (
             <button onClick={onEditProfile} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
               <UserPen className="h-3.5 w-3.5" />
               <span>Edit Profile</span>
             </button>
           )}
+          <div className={collapsed ? '' : 'ml-auto'}>
+            <ThemeToggle />
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

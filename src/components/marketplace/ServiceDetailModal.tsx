@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Star, CheckCircle2, MapPin, Package, Zap, Globe, X, Check } from 'lucide-react';
+import { Star, CheckCircle2, MapPin, Package, Zap, Globe, Check,
+  Camera, Utensils, Palette, Music, Building, Flower2, Briefcase, BarChart2, FileText, Mic, Video, Tent } from 'lucide-react';
 import { type ServiceListing, getReviewsForService } from '@/store/marketplaceStore';
 import { useStore, formatCurrency, generateId, type ResourceCategory } from '@/store/useStore';
 import { toast } from 'sonner';
@@ -25,12 +26,12 @@ const categoryGradients: Record<string, string> = {
   'Entertainment': 'linear-gradient(135deg, #1a1a0a, #2e2e14)',
 };
 
-const categoryIcons: Record<string, string> = {
-  'Photography': '📸', 'Catering': '🎂', 'Decoration': '🎨',
-  'DJ & Music': '🎵', 'Venue': '🏛️', 'Flowers': '💐',
-  'Financial Advisor': '💼', 'Budget Planner': '📊',
-  'Tax Consultant': '🧾', 'Anchor/Emcee': '🎤',
-  'Videography': '🎬', 'Entertainment': '🎪',
+const categoryIcons: Record<string, any> = {
+  'Photography': Camera, 'Catering': Utensils, 'Decoration': Palette,
+  'DJ & Music': Music, 'Venue': Building, 'Flowers': Flower2,
+  'Financial Advisor': Briefcase, 'Budget Planner': BarChart2,
+  'Tax Consultant': FileText, 'Anchor/Emcee': Mic,
+  'Videography': Video, 'Entertainment': Tent,
 };
 
 const categoryToResource: Record<string, ResourceCategory> = {
@@ -54,6 +55,8 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
 
   if (!listing) return null;
 
+  const Icon = categoryIcons[listing.category] || Camera;
+
   const handleAddToEvent = () => {
     if (!selectedEvent) { toast.error('Please select an event'); return; }
     const ev = events.find((e) => e.id === selectedEvent);
@@ -65,12 +68,12 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
       estimatedCost: listing.price,
       actualCost: 0,
     });
-    toast.success(`Added to ${ev.name} ✓`);
+    toast.success(`Added to ${ev.name}`);
     setSelectedEvent('');
   };
 
   const handleHireNow = () => {
-    toast.success('🎉 Enquiry Sent! The seller will contact you within 24 hours.');
+    toast.success('Enquiry Sent! The seller will contact you within 24 hours.');
     onClose();
   };
 
@@ -80,25 +83,21 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-0">
           {/* Left Side */}
           <div className="p-6 space-y-6 border-r border-border">
-            {/* Banner */}
             <div
               className="h-48 rounded-lg flex items-center justify-center"
               style={{ background: categoryGradients[listing.category] }}
             >
-              <span className="text-7xl">{categoryIcons[listing.category]}</span>
+              <Icon className="h-16 w-16 text-white/80" />
             </div>
 
-            {/* Breadcrumb */}
             <div className="text-xs text-muted-foreground">
               Marketplace &gt; {listing.category} &gt; <span className="text-foreground">{listing.name}</span>
             </div>
 
-            {/* Title */}
             <h2 className="font-display text-2xl font-extrabold text-foreground" style={{ letterSpacing: '-0.02em' }}>
               {listing.name}
             </h2>
 
-            {/* Seller row */}
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center font-bold text-foreground">
                 {listing.name.charAt(0)}
@@ -120,13 +119,11 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
 
             <hr className="border-border" />
 
-            {/* Description */}
             <div>
               <h3 className="font-display font-bold text-foreground mb-2">About this Service</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{listing.description}</p>
             </div>
 
-            {/* What's Included */}
             <div>
               <h3 className="font-display font-bold text-foreground mb-3">What's Included</h3>
               <ul className="space-y-2">
@@ -139,7 +136,6 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
               </ul>
             </div>
 
-            {/* About Seller */}
             <div>
               <h3 className="font-display font-bold text-foreground mb-2">About the Seller</h3>
               <p className="text-sm text-muted-foreground mb-3">{listing.sellerBio || listing.description}</p>
@@ -150,7 +146,6 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
               </div>
             </div>
 
-            {/* Reviews */}
             <div>
               <h3 className="font-display font-bold text-foreground mb-3">Customer Reviews ({listing.reviews})</h3>
               <div className="space-y-4">
@@ -188,27 +183,26 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
 
             <div className="space-y-4">
               <div>
-                <Label className="text-xs text-muted-foreground">Event Date</Label>
-                <Input type="date" className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Event Date</Label>
+                <Input type="date" className="bg-muted/30 border-border mt-1 rounded-md" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Number of Guests</Label>
-                <Input type="number" placeholder="e.g. 100" className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Number of Guests</Label>
+                <Input type="number" placeholder="e.g. 100" className="bg-muted/30 border-border mt-1 rounded-md" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Your City</Label>
-                <Input placeholder="e.g. Mumbai" className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Your City</Label>
+                <Input placeholder="e.g. Mumbai" className="bg-muted/30 border-border mt-1 rounded-md" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Special Requirements</Label>
-                <Textarea placeholder="Any special requests..." rows={3} className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Special Requirements</Label>
+                <Textarea placeholder="Any special requests..." rows={3} className="bg-muted/30 border-border mt-1 rounded-md" />
               </div>
             </div>
 
-            {/* Add to Event */}
             {events.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Add to Event Budget</Label>
+                <Label className="label-caps text-muted-foreground">Add to Event Budget</Label>
                 <Select value={selectedEvent} onValueChange={setSelectedEvent}>
                   <SelectTrigger className="bg-muted/30 border-border"><SelectValue placeholder="Select event..." /></SelectTrigger>
                   <SelectContent className="bg-card border-border">
@@ -218,13 +212,13 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
                   </SelectContent>
                 </Select>
                 <Button variant="outline" className="w-full border-electric text-electric hover:bg-electric/10" onClick={handleAddToEvent}>
-                  + Add to Event Budget
+                  Add to Event Budget
                 </Button>
               </div>
             )}
 
-            <Button className="w-full bg-coral text-coral-foreground font-bold text-base py-6 hover:bg-coral/90" onClick={handleHireNow}>
-              Hire Now →
+            <Button className="w-full bg-coral text-coral-foreground font-bold text-base py-6 rounded-md hover:bg-coral/90" onClick={handleHireNow}>
+              Hire Now
             </Button>
 
             <div className="space-y-2 text-xs text-muted-foreground">
