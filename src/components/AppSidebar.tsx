@@ -122,8 +122,14 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
             <span className="ml-auto font-mono text-xs text-primary font-bold">{quickScore}</span>
           </div>
         )}
-        <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-2 px-3'}`}>
+        <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-3 px-3'}`}>
           <Settings className="h-4 w-4 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
+          {!collapsed && onEditProfile && (
+            <button onClick={onEditProfile} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+              <UserPen className="h-3.5 w-3.5" />
+              <span>Edit Profile</span>
+            </button>
+          )}
         </div>
       </SidebarFooter>
     </Sidebar>
