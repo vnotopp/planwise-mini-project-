@@ -72,18 +72,18 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
         {!collapsed && (
           <div className="mt-5 flex items-center gap-3 rounded-lg bg-muted/30 p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-sm shrink-0">
-              V
+              {userInitial}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Vedant</p>
-              <p className="text-[10px] text-muted-foreground">Event Planner</p>
+              <p className="text-sm font-medium text-foreground truncate">{userName}</p>
+              <p className="text-[10px] text-muted-foreground">{userRole}</p>
             </div>
           </div>
         )}
         {collapsed && (
           <div className="mt-3 flex justify-center">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-xs">
-              V
+              {userInitial}
             </div>
           </div>
         )}
