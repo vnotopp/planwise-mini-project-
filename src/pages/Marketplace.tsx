@@ -10,23 +10,35 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Label } from '@/components/ui/label';
-import { Search, SlidersHorizontal, LayoutGrid, List, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import {
+  Search, SlidersHorizontal, LayoutGrid, List, ChevronLeft, ChevronRight, X,
+  Camera, Utensils, Palette, Music, Building, Flower2, Briefcase, BarChart2,
+  FileText, Mic, Video, Tent, ShoppingBag, Store, Users, Star,
+} from 'lucide-react';
 import { formatCurrency } from '@/store/useStore';
 
-const CATEGORIES: { label: string; icon: string; value: ServiceCategory | 'All' }[] = [
-  { label: 'All', icon: '', value: 'All' },
-  { label: 'Photography', icon: '📸', value: 'Photography' },
-  { label: 'Catering', icon: '🎂', value: 'Catering' },
-  { label: 'Decoration', icon: '🎨', value: 'Decoration' },
-  { label: 'DJ & Music', icon: '🎵', value: 'DJ & Music' },
-  { label: 'Venue', icon: '🏛️', value: 'Venue' },
-  { label: 'Flowers', icon: '💐', value: 'Flowers' },
-  { label: 'Financial Advisor', icon: '💼', value: 'Financial Advisor' },
-  { label: 'Budget Planner', icon: '📊', value: 'Budget Planner' },
-  { label: 'Tax Consultant', icon: '🧾', value: 'Tax Consultant' },
-  { label: 'Anchor/Emcee', icon: '🎤', value: 'Anchor/Emcee' },
-  { label: 'Videography', icon: '🎬', value: 'Videography' },
-  { label: 'Entertainment', icon: '🎪', value: 'Entertainment' },
+const categoryIcons: Record<string, any> = {
+  'Photography': Camera, 'Catering': Utensils, 'Decoration': Palette,
+  'DJ & Music': Music, 'Venue': Building, 'Flowers': Flower2,
+  'Financial Advisor': Briefcase, 'Budget Planner': BarChart2,
+  'Tax Consultant': FileText, 'Anchor/Emcee': Mic,
+  'Videography': Video, 'Entertainment': Tent,
+};
+
+const CATEGORIES: { label: string; value: ServiceCategory | 'All' }[] = [
+  { label: 'All', value: 'All' },
+  { label: 'Photography', value: 'Photography' },
+  { label: 'Catering', value: 'Catering' },
+  { label: 'Decoration', value: 'Decoration' },
+  { label: 'DJ & Music', value: 'DJ & Music' },
+  { label: 'Venue', value: 'Venue' },
+  { label: 'Flowers', value: 'Flowers' },
+  { label: 'Financial Advisor', value: 'Financial Advisor' },
+  { label: 'Budget Planner', value: 'Budget Planner' },
+  { label: 'Tax Consultant', value: 'Tax Consultant' },
+  { label: 'Anchor/Emcee', value: 'Anchor/Emcee' },
+  { label: 'Videography', value: 'Videography' },
+  { label: 'Entertainment', value: 'Entertainment' },
 ];
 
 const CITIES = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune', 'Hyderabad', 'Kolkata', 'Ahmedabad', 'Pan India'];
@@ -51,9 +63,9 @@ export default function Marketplace() {
     if (activeCategory !== 'All') results = results.filter((l) => l.category === activeCategory);
     results = results.filter((l) => l.price >= budgetRange[0] && l.price <= budgetRange[1]);
     if (city) results = results.filter((l) => l.cities.some((c) => c.toLowerCase().includes(city.toLowerCase())));
-    if (ratingFilter === '3★+') results = results.filter((l) => l.rating >= 3);
-    if (ratingFilter === '4★+') results = results.filter((l) => l.rating >= 4);
-    if (ratingFilter === '4.5★+') results = results.filter((l) => l.rating >= 4.5);
+    if (ratingFilter === '3+') results = results.filter((l) => l.rating >= 3);
+    if (ratingFilter === '4+') results = results.filter((l) => l.rating >= 4);
+    if (ratingFilter === '4.5+') results = results.filter((l) => l.rating >= 4.5);
     if (sortBy === 'Price: Low to High') results.sort((a, b) => a.price - b.price);
     if (sortBy === 'Price: High to Low') results.sort((a, b) => b.price - a.price);
     if (sortBy === 'Top Rated') results.sort((a, b) => b.rating - a.rating);
@@ -75,7 +87,7 @@ export default function Marketplace() {
   return (
     <div className="space-y-8">
       {/* HERO */}
-      <div className="relative rounded-xl p-8 md:p-12 overflow-hidden" style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 20px, hsl(var(--primary) / 0.03) 20px, hsl(var(--primary) / 0.03) 40px)' }}>
+      <div className="relative rounded-lg p-8 md:p-12 overflow-hidden" style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 20px, hsl(var(--primary) / 0.03) 20px, hsl(var(--primary) / 0.03) 40px)' }}>
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="space-y-4 max-w-xl">
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="font-display text-4xl md:text-5xl font-extrabold leading-tight" style={{ letterSpacing: '-0.03em' }}>
@@ -88,29 +100,35 @@ export default function Marketplace() {
             </motion.p>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-6 pt-2">
               {[
-                { label: 'Service Providers', value: 500 },
-                { label: 'Categories', value: 12 },
-                { label: 'Events Served', value: 10000 },
+                { label: 'Service Providers', value: 500, icon: Users },
+                { label: 'Categories', value: 12, icon: LayoutGrid },
+                { label: 'Events Served', value: 10000, icon: ShoppingBag },
               ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <AnimatedCounter value={s.value} className="font-mono text-2xl font-bold text-primary block" isCurrency={false} />
-                  <span className="text-[11px] text-muted-foreground">{s.label}</span>
+                <div key={s.label} className="flex items-center gap-2">
+                  <s.icon className="h-4 w-4 text-primary" />
+                  <div>
+                    <AnimatedCounter value={s.value} className="font-mono text-lg font-bold text-primary" isCurrency={false} />
+                    <span className="text-[11px] text-muted-foreground block">{s.label}</span>
+                  </div>
                 </div>
               ))}
-              <div className="text-center">
-                <span className="font-mono text-2xl font-bold text-primary block">4.8★</span>
-                <span className="text-[11px] text-muted-foreground">Avg Rating</span>
+              <div className="flex items-center gap-2">
+                <Star className="h-4 w-4 text-primary fill-primary" />
+                <div>
+                  <span className="font-mono text-lg font-bold text-primary">4.8</span>
+                  <span className="text-[11px] text-muted-foreground block">Avg Rating</span>
+                </div>
               </div>
             </motion.div>
           </div>
 
           {/* Mode Switcher */}
-          <div className="bg-muted/50 rounded-full p-1 flex shrink-0">
-            <button onClick={() => setMode('buy')} className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${mode === 'buy' ? 'bg-electric text-electric-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-              🛍️ Buy Services
+          <div className="bg-muted/50 rounded-lg p-1 flex shrink-0">
+            <button onClick={() => setMode('buy')} className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-bold transition-all ${mode === 'buy' ? 'bg-electric text-electric-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+              <ShoppingBag className="h-4 w-4" /> Buy Services
             </button>
-            <button onClick={() => setMode('sell')} className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${mode === 'sell' ? 'bg-coral text-coral-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-              💼 Sell Services
+            <button onClick={() => setMode('sell')} className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-bold transition-all ${mode === 'sell' ? 'bg-coral text-coral-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+              <Store className="h-4 w-4" /> Sell Services
             </button>
           </div>
         </div>
@@ -131,26 +149,30 @@ export default function Marketplace() {
                   <Input
                     value={search} onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search photographers, caterers, DJs, financial advisors..."
-                    className="h-14 pl-12 pr-4 text-base bg-card border-border focus:ring-2 focus:ring-coral/20 focus:border-coral transition-all"
+                    className="h-14 pl-12 pr-4 text-base bg-card border-border rounded-md focus:ring-2 focus:ring-coral/20 focus:border-coral transition-all"
                   />
                 </div>
-                <Button className="h-14 px-6 bg-coral text-coral-foreground font-bold hover:bg-coral/90">Search</Button>
+                <Button className="h-14 px-6 bg-coral text-coral-foreground font-bold rounded-md hover:bg-coral/90">Search</Button>
               </div>
 
               {/* Category Chips */}
               <div className="relative flex items-center gap-1">
-                <button onClick={() => scrollChips('left')} className="shrink-0 h-8 w-8 flex items-center justify-center rounded-full border border-border hover:bg-muted">
+                <button onClick={() => scrollChips('left')} className="shrink-0 h-8 w-8 flex items-center justify-center rounded-md border border-border hover:bg-muted">
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <div ref={chipScrollRef} className="flex gap-2 overflow-x-auto scrollbar-none flex-1 py-1">
-                  {CATEGORIES.map((c) => (
-                    <button key={c.value} onClick={() => setActiveCategory(c.value)}
-                      className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${activeCategory === c.value ? 'bg-coral text-coral-foreground' : 'border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'}`}>
-                      {c.icon && <span className="mr-1">{c.icon}</span>}{c.label}
-                    </button>
-                  ))}
+                  {CATEGORIES.map((c) => {
+                    const Icon = c.value !== 'All' ? categoryIcons[c.value] : null;
+                    return (
+                      <button key={c.value} onClick={() => setActiveCategory(c.value)}
+                        className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${activeCategory === c.value ? 'bg-coral text-coral-foreground' : 'border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30'}`}>
+                        {Icon && <Icon className="h-3.5 w-3.5" />}
+                        {c.label}
+                      </button>
+                    );
+                  })}
                 </div>
-                <button onClick={() => scrollChips('right')} className="shrink-0 h-8 w-8 flex items-center justify-center rounded-full border border-border hover:bg-muted">
+                <button onClick={() => scrollChips('right')} className="shrink-0 h-8 w-8 flex items-center justify-center rounded-md border border-border hover:bg-muted">
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
@@ -173,7 +195,7 @@ export default function Marketplace() {
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-border rounded-lg bg-card">
                       <div>
-                        <Label className="text-xs text-muted-foreground mb-2 block">Budget Range</Label>
+                        <Label className="label-caps text-muted-foreground mb-2 block">Budget Range</Label>
                         <Slider value={budgetRange} onValueChange={setBudgetRange} min={500} max={100000} step={500} className="mt-3" />
                         <div className="flex justify-between text-[10px] text-muted-foreground font-mono mt-1">
                           <span>{formatCurrency(budgetRange[0])}</span>
@@ -181,7 +203,7 @@ export default function Marketplace() {
                         </div>
                       </div>
                       <div>
-                        <Label className="text-xs text-muted-foreground mb-2 block">City</Label>
+                        <Label className="label-caps text-muted-foreground mb-2 block">City</Label>
                         <Select value={city} onValueChange={setCity}>
                           <SelectTrigger className="bg-muted/30 border-border"><SelectValue placeholder="Any city" /></SelectTrigger>
                           <SelectContent className="bg-card border-border">
@@ -191,16 +213,16 @@ export default function Marketplace() {
                         </Select>
                       </div>
                       <div>
-                        <Label className="text-xs text-muted-foreground mb-2 block">Rating</Label>
+                        <Label className="label-caps text-muted-foreground mb-2 block">Rating</Label>
                         <div className="flex gap-1.5">
-                          {['Any', '3★+', '4★+', '4.5★+'].map((r) => (
+                          {['Any', '3+', '4+', '4.5+'].map((r) => (
                             <button key={r} onClick={() => setRatingFilter(r)}
-                              className={`px-2.5 py-1 rounded text-xs transition-all ${ratingFilter === r ? 'bg-primary text-primary-foreground' : 'border border-border text-muted-foreground'}`}>{r}</button>
+                              className={`px-2.5 py-1 rounded-md text-xs transition-all ${ratingFilter === r ? 'bg-primary text-primary-foreground' : 'border border-border text-muted-foreground'}`}>{r}</button>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <Label className="text-xs text-muted-foreground mb-2 block">Sort By</Label>
+                        <Label className="label-caps text-muted-foreground mb-2 block">Sort By</Label>
                         <Select value={sortBy} onValueChange={setSortBy}>
                           <SelectTrigger className="bg-muted/30 border-border"><SelectValue /></SelectTrigger>
                           <SelectContent className="bg-card border-border">
@@ -220,10 +242,10 @@ export default function Marketplace() {
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Showing <span className="font-bold text-foreground">{filtered.length}</span> services</span>
               <div className="flex gap-1">
-                <button onClick={() => setGridView(true)} className={`p-2 rounded ${gridView ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}>
+                <button onClick={() => setGridView(true)} className={`p-2 rounded-md ${gridView ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}>
                   <LayoutGrid className="h-4 w-4" />
                 </button>
-                <button onClick={() => setGridView(false)} className={`p-2 rounded ${!gridView ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}>
+                <button onClick={() => setGridView(false)} className={`p-2 rounded-md ${!gridView ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}>
                   <List className="h-4 w-4" />
                 </button>
               </div>
@@ -232,7 +254,7 @@ export default function Marketplace() {
             {/* Cards Grid */}
             {filtered.length === 0 ? (
               <div className="text-center py-20">
-                <div className="text-5xl mb-4">🔍</div>
+                <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="font-display text-xl font-bold text-foreground mb-2">No services found</h3>
                 <p className="text-muted-foreground text-sm mb-4">Try adjusting your filters or search terms</p>
                 <Button variant="outline" onClick={clearFilters}>Clear all filters</Button>
@@ -248,7 +270,6 @@ export default function Marketplace() {
         )}
       </AnimatePresence>
 
-      {/* Detail Modal */}
       <ServiceDetailModal listing={selectedService} open={!!selectedListing} onClose={() => setSelectedListing(null)} />
     </div>
   );

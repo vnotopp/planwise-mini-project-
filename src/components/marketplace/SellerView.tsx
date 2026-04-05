@@ -11,30 +11,34 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
-import { Plus, Edit, Trash2, Eye, MessageSquare, Package, Star, Check, ArrowRight, ArrowLeft, X } from 'lucide-react';
+import {
+  Plus, Edit, Trash2, Eye, MessageSquare, Package, Star, Check, ArrowRight, ArrowLeft, X,
+  Camera, Utensils, Palette, Music, Building, Flower2, Briefcase, BarChart2, FileText, Mic, Video, Tent,
+  CalendarCheck, RefreshCw, BoxSelect, MapPin, Globe, Navigation, Store,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { ServiceCard } from './ServiceCard';
 
-const CATEGORIES: { label: string; icon: string; value: ServiceCategory }[] = [
-  { label: 'Photography', icon: '📸', value: 'Photography' },
-  { label: 'Catering', icon: '🎂', value: 'Catering' },
-  { label: 'Decoration', icon: '🎨', value: 'Decoration' },
-  { label: 'DJ & Music', icon: '🎵', value: 'DJ & Music' },
-  { label: 'Venue', icon: '🏛️', value: 'Venue' },
-  { label: 'Flowers', icon: '💐', value: 'Flowers' },
-  { label: 'Financial Advisor', icon: '💼', value: 'Financial Advisor' },
-  { label: 'Budget Planner', icon: '📊', value: 'Budget Planner' },
-  { label: 'Tax Consultant', icon: '🧾', value: 'Tax Consultant' },
-  { label: 'Anchor/Emcee', icon: '🎤', value: 'Anchor/Emcee' },
-  { label: 'Videography', icon: '🎬', value: 'Videography' },
-  { label: 'Entertainment', icon: '🎪', value: 'Entertainment' },
+const CATEGORIES: { label: string; icon: any; value: ServiceCategory }[] = [
+  { label: 'Photography', icon: Camera, value: 'Photography' },
+  { label: 'Catering', icon: Utensils, value: 'Catering' },
+  { label: 'Decoration', icon: Palette, value: 'Decoration' },
+  { label: 'DJ & Music', icon: Music, value: 'DJ & Music' },
+  { label: 'Venue', icon: Building, value: 'Venue' },
+  { label: 'Flowers', icon: Flower2, value: 'Flowers' },
+  { label: 'Financial Advisor', icon: Briefcase, value: 'Financial Advisor' },
+  { label: 'Budget Planner', icon: BarChart2, value: 'Budget Planner' },
+  { label: 'Tax Consultant', icon: FileText, value: 'Tax Consultant' },
+  { label: 'Anchor/Emcee', icon: Mic, value: 'Anchor/Emcee' },
+  { label: 'Videography', icon: Video, value: 'Videography' },
+  { label: 'Entertainment', icon: Tent, value: 'Entertainment' },
 ];
 
 const PRICE_TYPES = ['Per Event', 'Per Hour', 'Per Person', 'Fixed Package', 'Per Session'];
 const SERVICE_TYPES = [
-  { label: 'One-time Event', icon: '📅' },
-  { label: 'Ongoing', icon: '🔄' },
-  { label: 'Package Deal', icon: '📦' },
+  { label: 'One-time Event', icon: CalendarCheck },
+  { label: 'Ongoing', icon: RefreshCw },
+  { label: 'Package Deal', icon: BoxSelect },
 ];
 
 export function SellerView() {
@@ -44,7 +48,6 @@ export function SellerView() {
   const [step, setStep] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  // Form state
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<ServiceCategory | ''>('');
   const [serviceType, setServiceType] = useState('One-time Event');
@@ -80,7 +83,7 @@ export function SellerView() {
       enquiries: 0, views: 0, serviceType, gstRegistered: gst,
       experience, isUserListing: true, active: true, memberSince: 'April 2025',
     });
-    toast.success('🎉 Your service is now live!');
+    toast.success('Your service is now live!');
     resetForm();
     setShowForm(false);
   };
@@ -88,16 +91,22 @@ export function SellerView() {
   const totalEnquiries = userListings.reduce((s, l) => s + l.enquiries, 0);
   const totalViews = userListings.reduce((s, l) => s + l.views, 0);
 
+  const radiusOptions = [
+    { label: 'Local Only', icon: MapPin },
+    { label: 'Pan City', icon: Navigation },
+    { label: 'Pan India', icon: Globe },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Seller Hero */}
-      <div className="rounded-xl p-8 text-coral-foreground" style={{ background: 'linear-gradient(135deg, hsl(0 100% 71%), hsl(20 100% 64%))' }}>
+      <div className="rounded-lg p-8 text-coral-foreground" style={{ background: 'linear-gradient(135deg, hsl(0 100% 71%), hsl(20 100% 64%))' }}>
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h2 className="font-display text-3xl font-extrabold" style={{ letterSpacing: '-0.02em' }}>Turn Your Skills Into Income</h2>
             <p className="mt-2 opacity-90">List your services and connect with thousands of event planners across India</p>
             <div className="flex gap-6 mt-4 text-sm">
-              <span>₹2.4L avg annual earnings</span>
+              <span>Avg annual earnings: 2.4L</span>
               <span>Free to list</span>
               <span>Get paid securely</span>
             </div>
@@ -128,7 +137,7 @@ export function SellerView() {
       {/* Listings */}
       {userListings.length === 0 ? (
         <GlassCard className="text-center py-16">
-          <div className="text-5xl mb-4">🏪</div>
+          <Store className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="font-display text-xl font-bold text-foreground mb-2">You haven't listed any services yet</h3>
           <p className="text-muted-foreground text-sm mb-6">Start earning by listing your first service</p>
           <Button className="bg-coral text-coral-foreground font-bold" onClick={() => { resetForm(); setShowForm(true); }}>
@@ -176,42 +185,48 @@ export function SellerView() {
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <Label className="text-xs text-muted-foreground">Service Title</Label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value.slice(0, 80))} className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Service Title</Label>
+                <Input value={title} onChange={(e) => setTitle(e.target.value.slice(0, 80))} className="bg-muted/30 border-border mt-1 rounded-md" />
                 <span className="text-[10px] text-muted-foreground">{title.length}/80</span>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Category</Label>
+                <Label className="label-caps text-muted-foreground">Category</Label>
                 <div className="grid grid-cols-4 gap-2 mt-2">
-                  {CATEGORIES.map((c) => (
-                    <button key={c.value} onClick={() => setCategory(c.value)}
-                      className={`p-3 rounded-lg border text-center transition-all ${category === c.value ? 'border-coral bg-coral/10' : 'border-border hover:border-muted-foreground'}`}>
-                      <span className="text-2xl block">{c.icon}</span>
-                      <span className="text-[10px] text-muted-foreground mt-1 block">{c.label}</span>
-                    </button>
-                  ))}
+                  {CATEGORIES.map((c) => {
+                    const CIcon = c.icon;
+                    return (
+                      <button key={c.value} onClick={() => setCategory(c.value)}
+                        className={`p-3 rounded-lg border text-center transition-all ${category === c.value ? 'border-coral bg-coral/10' : 'border-border hover:border-muted-foreground'}`}>
+                        <CIcon className="h-6 w-6 mx-auto text-foreground" />
+                        <span className="text-[10px] text-muted-foreground mt-1 block">{c.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Service Type</Label>
+                <Label className="label-caps text-muted-foreground">Service Type</Label>
                 <div className="grid grid-cols-3 gap-2 mt-2">
-                  {SERVICE_TYPES.map((t) => (
-                    <button key={t.label} onClick={() => setServiceType(t.label)}
-                      className={`p-3 rounded-lg border text-center transition-all ${serviceType === t.label ? 'border-coral bg-coral/10' : 'border-border hover:border-muted-foreground'}`}>
-                      <span className="text-xl block">{t.icon}</span>
-                      <span className="text-xs text-muted-foreground">{t.label}</span>
-                    </button>
-                  ))}
+                  {SERVICE_TYPES.map((t) => {
+                    const TIcon = t.icon;
+                    return (
+                      <button key={t.label} onClick={() => setServiceType(t.label)}
+                        className={`p-3 rounded-lg border text-center transition-all ${serviceType === t.label ? 'border-coral bg-coral/10' : 'border-border hover:border-muted-foreground'}`}>
+                        <TIcon className="h-5 w-5 mx-auto text-foreground" />
+                        <span className="text-xs text-muted-foreground">{t.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Short Description</Label>
-                <Textarea value={shortDesc} onChange={(e) => setShortDesc(e.target.value.slice(0, 150))} rows={2} className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Short Description</Label>
+                <Textarea value={shortDesc} onChange={(e) => setShortDesc(e.target.value.slice(0, 150))} rows={2} className="bg-muted/30 border-border mt-1 rounded-md" />
                 <span className="text-[10px] text-muted-foreground">{shortDesc.length}/150</span>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Full Description</Label>
-                <Textarea value={fullDesc} onChange={(e) => setFullDesc(e.target.value.slice(0, 500))} rows={4} className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Full Description</Label>
+                <Textarea value={fullDesc} onChange={(e) => setFullDesc(e.target.value.slice(0, 500))} rows={4} className="bg-muted/30 border-border mt-1 rounded-md" />
                 <span className="text-[10px] text-muted-foreground">{fullDesc.length}/500</span>
               </div>
             </div>
@@ -220,11 +235,11 @@ export function SellerView() {
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <Label className="text-xs text-muted-foreground">Starting Price (₹)</Label>
-                <Input type="number" value={price || ''} onChange={(e) => setPrice(Number(e.target.value))} className="bg-muted/30 border-border mt-1 font-mono" />
+                <Label className="label-caps text-muted-foreground">Starting Price (INR)</Label>
+                <Input type="number" value={price || ''} onChange={(e) => setPrice(Number(e.target.value))} className="bg-muted/30 border-border mt-1 font-mono rounded-md" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Price Type</Label>
+                <Label className="label-caps text-muted-foreground">Price Type</Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
                   {PRICE_TYPES.map((pt) => (
                     <button key={pt} onClick={() => setPriceType(pt)}
@@ -235,30 +250,35 @@ export function SellerView() {
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Cities Served</Label>
+                <Label className="label-caps text-muted-foreground">Cities Served</Label>
                 <div className="flex gap-2 mt-1">
-                  <Input value={cityInput} onChange={(e) => setCityInput(e.target.value)} placeholder="Type city name" className="bg-muted/30 border-border"
+                  <Input value={cityInput} onChange={(e) => setCityInput(e.target.value)} placeholder="Type city name" className="bg-muted/30 border-border rounded-md"
                     onKeyDown={(e) => { if (e.key === 'Enter' && cityInput.trim()) { e.preventDefault(); setCities([...cities, cityInput.trim()]); setCityInput(''); } }} />
                 </div>
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {cities.map((c) => (
-                    <span key={c} className="text-xs px-2 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1">
+                    <span key={c} className="text-xs px-2 py-1 rounded-md bg-coral/10 text-coral flex items-center gap-1">
                       {c} <X className="h-3 w-3 cursor-pointer" onClick={() => setCities(cities.filter((ci) => ci !== c))} />
                     </span>
                   ))}
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Service Radius</Label>
+                <Label className="label-caps text-muted-foreground">Service Radius</Label>
                 <div className="grid grid-cols-3 gap-2 mt-2">
-                  {['📍 Local Only', '🏙️ Pan City', '🌍 Pan India'].map((r) => (
-                    <button key={r} onClick={() => setRadius(r)}
-                      className={`p-2 rounded-lg border text-xs text-center transition-all ${radius === r ? 'border-coral bg-coral/10' : 'border-border text-muted-foreground'}`}>{r}</button>
-                  ))}
+                  {radiusOptions.map((r) => {
+                    const RIcon = r.icon;
+                    return (
+                      <button key={r.label} onClick={() => setRadius(r.label)}
+                        className={`flex items-center justify-center gap-1.5 p-2 rounded-lg border text-xs text-center transition-all ${radius === r.label ? 'border-coral bg-coral/10' : 'border-border text-muted-foreground'}`}>
+                        <RIcon className="h-3.5 w-3.5" /> {r.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Label className="text-xs text-muted-foreground">GST Registered</Label>
+                <Label className="label-caps text-muted-foreground">GST Registered</Label>
                 <Switch checked={gst} onCheckedChange={setGst} />
               </div>
             </div>
@@ -267,9 +287,9 @@ export function SellerView() {
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <Label className="text-xs text-muted-foreground">What's Included</Label>
+                <Label className="label-caps text-muted-foreground">What's Included</Label>
                 <div className="flex gap-2 mt-1">
-                  <Input value={includeInput} onChange={(e) => setIncludeInput(e.target.value)} placeholder="e.g. Full event coverage" className="bg-muted/30 border-border"
+                  <Input value={includeInput} onChange={(e) => setIncludeInput(e.target.value)} placeholder="e.g. Full event coverage" className="bg-muted/30 border-border rounded-md"
                     onKeyDown={(e) => { if (e.key === 'Enter' && includeInput.trim()) { e.preventDefault(); setIncluded([...included, includeInput.trim()]); setIncludeInput(''); } }} />
                   <Button variant="outline" size="sm" className="border-coral text-coral shrink-0" onClick={() => { if (includeInput.trim()) { setIncluded([...included, includeInput.trim()]); setIncludeInput(''); } }}>Add</Button>
                 </div>
@@ -283,26 +303,26 @@ export function SellerView() {
                 </ul>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Tags (max 5)</Label>
+                <Label className="label-caps text-muted-foreground">Tags (max 5)</Label>
                 <div className="flex gap-2 mt-1">
-                  <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="e.g. Same Day" className="bg-muted/30 border-border"
+                  <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="e.g. Same Day" className="bg-muted/30 border-border rounded-md"
                     onKeyDown={(e) => { if (e.key === 'Enter' && tagInput.trim() && tags.length < 5) { e.preventDefault(); setTags([...tags, tagInput.trim()]); setTagInput(''); } }} />
                 </div>
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {tags.map((t) => (
-                    <span key={t} className="text-xs px-2 py-1 rounded-full bg-coral/10 text-coral flex items-center gap-1">
+                    <span key={t} className="text-xs px-2 py-1 rounded-md bg-coral/10 text-coral flex items-center gap-1">
                       {t} <X className="h-3 w-3 cursor-pointer" onClick={() => setTags(tags.filter((tg) => tg !== t))} />
                     </span>
                   ))}
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Turnaround / Booking Lead Time</Label>
-                <Input value={turnaround} onChange={(e) => setTurnaround(e.target.value)} placeholder="e.g. Book 2 weeks in advance" className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Turnaround / Booking Lead Time</Label>
+                <Input value={turnaround} onChange={(e) => setTurnaround(e.target.value)} placeholder="e.g. Book 2 weeks in advance" className="bg-muted/30 border-border mt-1 rounded-md" />
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Years of Experience</Label>
-                <Input type="number" value={experience || ''} onChange={(e) => setExperience(Number(e.target.value))} className="bg-muted/30 border-border mt-1" />
+                <Label className="label-caps text-muted-foreground">Years of Experience</Label>
+                <Input type="number" value={experience || ''} onChange={(e) => setExperience(Number(e.target.value))} className="bg-muted/30 border-border mt-1 rounded-md" />
               </div>
             </div>
           )}
@@ -338,7 +358,7 @@ export function SellerView() {
             {step < 4 ? (
               <Button className="bg-coral text-coral-foreground font-bold" onClick={() => setStep(step + 1)}>Next<ArrowRight className="ml-2 h-4 w-4" /></Button>
             ) : (
-              <Button className="bg-coral text-coral-foreground font-bold" onClick={handlePublish}>🎉 Publish Listing</Button>
+              <Button className="bg-coral text-coral-foreground font-bold" onClick={handlePublish}>Publish Listing</Button>
             )}
           </div>
         </DialogContent>
