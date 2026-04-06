@@ -7,9 +7,10 @@ interface AnimatedCounterProps {
   prefix?: string;
   isCurrency?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = true, className = '' }: AnimatedCounterProps) {
+export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = true, className = '', style }: AnimatedCounterProps) {
   const [display, setDisplay] = useState(0);
   const prev = useRef(0);
   const raf = useRef<number>();
@@ -36,7 +37,7 @@ export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = t
   }, [value, duration]);
 
   return (
-    <span className={className}>
+    <span className={className} style={style}>
       {prefix}
       {isCurrency ? formatCurrency(Math.round(display)) : Math.round(display).toLocaleString('en-IN')}
     </span>
