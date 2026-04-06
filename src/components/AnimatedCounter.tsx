@@ -10,7 +10,7 @@ interface AnimatedCounterProps {
   style?: React.CSSProperties;
 }
 
-export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = true, className = '' }: AnimatedCounterProps) {
+export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = true, className = '', style }: AnimatedCounterProps) {
   const [display, setDisplay] = useState(0);
   const prev = useRef(0);
   const raf = useRef<number>();
