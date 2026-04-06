@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
 interface ProgressRingProps {
-  value: number; // 0-100
+  value: number;
   size?: number;
   strokeWidth?: number;
   className?: string;
   label?: string;
 }
 
-export function ProgressRing({ value, size = 120, strokeWidth = 8, className = '', label }: ProgressRingProps) {
+export function ProgressRing({ value, size = 180, strokeWidth = 10, className = '', label }: ProgressRingProps) {
   const [animatedValue, setAnimatedValue] = useState(0);
   const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
+  const circumference = Math.PI * radius; // semicircle
   const offset = circumference - (animatedValue / 100) * circumference;
 
   const color = animatedValue >= 75
@@ -27,42 +27,30 @@ export function ProgressRing({ value, size = 120, strokeWidth = 8, className = '
     return () => clearTimeout(timer);
   }, [value]);
 
-  // Tick marks for speedometer effect
-  const ticks = Array.from({ length: 20 }, (_, i) => {
-    const angle = (-90 + (i / 19) * 360) * (Math.PI / 180);
-    const outerR = radius + strokeWidth / 2 + 4;
-    const innerR = radius + strokeWidth / 2 + 1;
-    return {
-      x1: size / 2 + Math.cos(angle) * innerR,
-      y1: size / 2 + Math.sin(angle) * innerR,
-      x2: size / 2 + Math.cos(angle) * outerR,
-      y2: size / 2 + Math.sin(angle) * outerR,
-    };
-  });
-
   return (
-    <div className={`relative inline-flex items-center justify-center ${className}`}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke="hsl(215 14% 12%)" strokeWidth={strokeWidth}
+    <div className={`relative inline-flex flex-col items-center justify-center ${className}`}>
+      <svg width={size} height={size / 2 + strokeWidth} viewBox={`0 0 ${size} ${size / 2 + strokeWidth}`}>
+        {/* Background arc */}
+        <path
+          d={`M ${strokeWidth / 2} ${size / 2} A ${radius} ${radius} 0 0 1 ${size - strokeWidth / 2} ${size / 2}`}
+          fill="none"
+          stroke="hsl(0 0% 12%)"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
         />
-        <circle
-          cx={size / 2} cy={size / 2} r={radius}
-          fill="none" stroke={color} strokeWidth={strokeWidth}
+        {/* Value arc */}
+        <path
+          d={`M ${strokeWidth / 2} ${size / 2} A ${radius} ${radius} 0 0 1 ${size - strokeWidth / 2} ${size / 2}`}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           style={{ transition: 'stroke-dashoffset 1.5s ease-out, stroke 0.5s ease' }}
         />
       </svg>
-      {/* Tick marks */}
-      <svg width={size} height={size} className="absolute inset-0 -rotate-90">
-        {ticks.map((t, i) => (
-          <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="hsl(215 14% 20%)" strokeWidth={1} />
-        ))}
-      </svg>
-      <div className="absolute flex flex-col items-center">
+      <div className="absolute bottom-0 flex flex-col items-center">
         <span className="font-mono text-3xl font-bold text-foreground">{Math.round(animatedValue)}</span>
         {label && <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</span>}
       </div>

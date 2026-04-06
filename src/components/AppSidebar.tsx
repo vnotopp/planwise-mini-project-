@@ -55,7 +55,7 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
   const dotColor = quickScore >= 75 ? 'bg-success' : quickScore >= 50 ? 'bg-primary' : quickScore >= 25 ? 'bg-warning' : 'bg-destructive';
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-sidebar/80 backdrop-blur-sm">
+    <Sidebar collapsible="icon" className="border-r border-border bg-sidebar">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg btn-primary-gradient shrink-0">
@@ -70,19 +70,19 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
         </div>
 
         {!collapsed && (
-          <div className="mt-5 flex items-center gap-3 rounded-lg bg-muted/30 p-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-sm shrink-0">
+          <div className="mt-5 flex items-center gap-3 p-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-sm shrink-0">
               {userInitial}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">{userName}</p>
+              <p className="text-sm font-bold text-foreground truncate uppercase tracking-wide">{userName}</p>
               <p className="text-[10px] text-muted-foreground">{userRole}</p>
             </div>
           </div>
         )}
         {collapsed && (
           <div className="mt-3 flex justify-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-display font-bold text-xs">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-xs">
               {userInitial}
             </div>
           </div>
@@ -91,7 +91,7 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="label-caps text-muted-foreground">Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="label-caps text-muted-foreground text-[10px] tracking-[0.12em]">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -100,8 +100,8 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
                     <NavLink
                       to={item.url}
                       end={item.url === '/'}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium border-l-[3px] border-l-primary"
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-all hover:text-foreground"
+                      activeClassName="text-primary bg-[hsl(43_88%_55%/0.12)]"
                     >
                       <item.icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.5} />
                       {!collapsed && <span className="text-[14px] font-medium" style={{ letterSpacing: '0.01em' }}>{item.title}</span>}
@@ -116,7 +116,7 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
 
       <SidebarFooter className="p-4 space-y-3">
         {!collapsed && (
-          <div className="flex items-center gap-2 rounded-lg bg-muted/30 px-3 py-2">
+          <div className="flex items-center gap-2 px-3 py-2">
             <div className={`h-2.5 w-2.5 rounded-full ${dotColor}`} />
             <span className="text-xs text-muted-foreground">Health</span>
             <span className="ml-auto font-mono text-xs text-primary font-bold">{quickScore}</span>
