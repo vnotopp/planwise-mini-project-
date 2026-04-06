@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,27 +6,27 @@
 
 @layer base {
   :root {
-    --background: 228 80% 3%;
-    --foreground: 210 50% 96%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 20% 7%;
-    --card-foreground: 210 50% 96%;
-    --card-elevated: 220 20% 10%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 95%;
+    --card-elevated: 0 0% 9%;
 
-    --popover: 220 20% 7%;
-    --popover-foreground: 210 50% 96%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 95%;
 
     --primary: 43 88% 55%;
-    --primary-foreground: 228 80% 3%;
+    --primary-foreground: 0 0% 5%;
 
     --secondary: 36 90% 44%;
-    --secondary-foreground: 210 50% 96%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 220 14% 10%;
-    --muted-foreground: 215 14% 50%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 45%;
 
     --accent: 187 92% 41%;
-    --accent-foreground: 228 80% 3%;
+    --accent-foreground: 0 0% 5%;
 
     --coral: 0 100% 71%;
     --coral-foreground: 0 0% 100%;
@@ -38,32 +38,32 @@
     --emerald-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 50% 96%;
+    --destructive-foreground: 0 0% 95%;
 
     --success: 160 84% 39%;
-    --success-foreground: 210 50% 96%;
+    --success-foreground: 0 0% 95%;
 
     --warning: 43 96% 56%;
-    --warning-foreground: 228 80% 3%;
+    --warning-foreground: 0 0% 5%;
 
-    --border: 215 14% 15%;
-    --input: 215 14% 15%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
     --ring: 43 88% 55%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 228 80% 2%;
-    --sidebar-foreground: 210 50% 96%;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 43 88% 55%;
-    --sidebar-primary-foreground: 228 80% 3%;
-    --sidebar-accent: 220 20% 10%;
-    --sidebar-accent-foreground: 210 50% 96%;
-    --sidebar-border: 215 14% 15%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 43 88% 55%;
+    --sidebar-accent-foreground: 43 88% 55%;
+    --sidebar-border: 0 0% 12%;
     --sidebar-ring: 43 88% 55%;
 
     --font-display: 'Space Grotesk', sans-serif;
     --font-body: 'DM Sans', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
   }
 
   .light {
@@ -134,40 +134,6 @@
     min-height: 100vh;
   }
 
-  .dark body,
-  :root:not(.light) body {
-    background-color: #050810;
-  }
-
-  .dark body::before,
-  :root:not(.light) body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: -1;
-    background-image: url('/particlebg.gif');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.3;
-  }
-
-  .dark body::after,
-  :root:not(.light) body::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: -1;
-    background: linear-gradient(
-      135deg,
-      rgba(5, 8, 16, 0.8) 0%,
-      rgba(5, 8, 16, 0.65) 50%,
-      rgba(5, 8, 16, 0.8) 100%
-    );
-  }
-
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     font-weight: 700;
@@ -198,7 +164,6 @@
   }
   .editorial-card:hover {
     border-color: hsl(var(--primary) / 0.3);
-    box-shadow: 0 4px 24px hsl(var(--primary) / 0.06);
   }
 
   .light .editorial-card {
@@ -217,9 +182,9 @@
   .section-number {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 4rem;
+    font-size: 5rem;
     line-height: 1;
-    color: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary) / 0.15);
     letter-spacing: -0.04em;
     user-select: none;
   }
@@ -260,7 +225,6 @@
 
   .glass-card { @apply editorial-card; }
   .noise-overlay { position: relative; }
-  .glow-gold { box-shadow: 0 0 20px hsl(43 88% 55% / 0.1); }
 }
 
 @layer utilities {
