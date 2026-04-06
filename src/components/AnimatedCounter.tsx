@@ -37,7 +37,7 @@ export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = t
   }, [value, duration]);
 
   return (
-    <span className={className}>
+    <span className={className} style={style}>
       {prefix}
       {isCurrency ? formatCurrency(Math.round(display)) : Math.round(display).toLocaleString('en-IN')}
     </span>
