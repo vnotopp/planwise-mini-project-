@@ -7,6 +7,7 @@ interface AnimatedCounterProps {
   prefix?: string;
   isCurrency?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export function AnimatedCounter({ value, duration = 1000, prefix, isCurrency = true, className = '' }: AnimatedCounterProps) {
