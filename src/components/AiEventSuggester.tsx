@@ -192,7 +192,7 @@ function FollowUpCard({
         <span className="text-sm font-body font-semibold text-foreground">Quick Question</span>
       </div>
       <p className="text-sm font-body text-foreground mb-4 leading-relaxed">{question}</p>
-      {options && options.length > 0 && (
+      {Array.isArray(options) && options.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3">
           {options.map((opt) => (
             <button
