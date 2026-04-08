@@ -1,4 +1,4 @@
-import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen, Briefcase } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
 import { getUserSetup } from '@/components/OnboardingModal';
@@ -13,6 +13,7 @@ const navItems = [
   { title: 'Event Planner', url: '/events', icon: CalendarDays },
   { title: 'Expense Tracker', url: '/expenses', icon: Receipt },
   { title: 'Debt Manager', url: '/debts', icon: Landmark },
+  { title: 'Portfolio', url: '/portfolio', icon: Briefcase },
   { title: 'Reports', url: '/reports', icon: BarChart3 },
   { title: 'Marketplace', url: '/marketplace', icon: ShoppingBag },
 ];
