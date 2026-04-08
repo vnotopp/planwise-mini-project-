@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import EventPlanner from "./pages/EventPlanner";
 import ExpenseTracker from "./pages/ExpenseTracker";
 import DebtManager from "./pages/DebtManager";
+import Portfolio from "./pages/Portfolio";
 import Reports from "./pages/Reports";
 import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
@@ -31,6 +32,7 @@ function AnimatedRoutes() {
           <Route path="/events" element={<EventPlanner />} />
           <Route path="/expenses" element={<ExpenseTracker />} />
           <Route path="/debts" element={<DebtManager />} />
+          <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="*" element={<NotFound />} />
