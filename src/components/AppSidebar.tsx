@@ -88,9 +88,13 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
 
         {!collapsed && (
           <div className="mt-5 flex items-center gap-3 p-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-sm shrink-0">
-              {userInitial}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={userName} className="h-10 w-10 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-sm shrink-0">
+                {userInitial}
+              </div>
+            )}
             <div className="min-w-0">
               <p className="text-sm font-bold text-foreground truncate uppercase tracking-wide">{userName}</p>
               <p className="text-[10px] text-muted-foreground">{userRole}</p>
@@ -99,9 +103,13 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
         )}
         {collapsed && (
           <div className="mt-3 flex justify-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-xs">
-              {userInitial}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={userName} className="h-8 w-8 rounded-full object-cover" />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-xs">
+                {userInitial}
+              </div>
+            )}
           </div>
         )}
       </SidebarHeader>
@@ -151,6 +159,20 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
             <ThemeToggle />
           </div>
         </div>
+        {!collapsed && (
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-destructive transition-colors w-full"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Sign Out</span>
+          </button>
+        )}
+        {collapsed && (
+          <button onClick={handleSignOut} className="flex justify-center text-muted-foreground hover:text-destructive">
+            <LogOut className="h-4 w-4" />
+          </button>
+        )}
       </SidebarFooter>
     </Sidebar>
   );
