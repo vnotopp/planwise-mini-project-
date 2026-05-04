@@ -1,21 +1,42 @@
-import { ReactNode, useState, useCallback } from 'react';
+import { ReactNode, useState, useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { LiveClock } from '@/components/LiveClock';
 import { NotificationBell } from '@/components/NotificationBell';
-import { OnboardingModal, getUserSetup, UserSetup } from '@/components/OnboardingModal';
+import { OnboardingModal, getUserSetup } from '@/components/OnboardingModal';
+import { useAuthStore, initAuth } from '@/store/useAuthStore';
+
+let bootstrapped = false;
 
 export function AppLayout({ children }: { children: ReactNode }) {
-  const [showOnboarding, setShowOnboarding] = useState(!getUserSetup());
+  const location = useLocation();
+  const { session, profile, initialized } = useAuthStore();
   const [editProfile, setEditProfile] = useState(false);
   const [userKey, setUserKey] = useState(0);
 
+  useEffect(() => {
+    if (!bootstrapped) {
+      bootstrapped = true;
+      initAuth();
+    }
+  }, []);
+
   const handleComplete = useCallback(() => {
-    setShowOnboarding(false);
     setEditProfile(false);
     setUserKey((k) => k + 1);
   }, []);
 
+  // Bare layout on /auth route — no sidebar, no chrome
+  if (location.pathname === '/auth') {
+    return <>{children}</>;
+  }
+
+  // Show onboarding role picker only after sign-in if profile exists with no role yet,
+  // OR for legacy unauthenticated demo flow if no localStorage setup exists.
+  const needsLegacySetup = !session && initialized && !getUserSetup();
+  const needsRoleSelection = !!session && !!profile && !profile.role;
+  const showOnboarding = editProfile || needsLegacySetup || needsRoleSelection;
   const editValues = editProfile ? getUserSetup() : null;
 
   return (
@@ -35,7 +56,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
-      <OnboardingModal open={showOnboarding || editProfile} onComplete={handleComplete} initialValues={editValues} />
+      <OnboardingModal open={showOnboarding} onComplete={handleComplete} initialValues={editValues} />
     </SidebarProvider>
   );
 }
