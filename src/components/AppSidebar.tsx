@@ -1,8 +1,11 @@
-import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen, Briefcase } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen, Briefcase, LogOut } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getUserSetup } from '@/components/OnboardingModal';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -29,10 +32,23 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const { events, debts, monthlyIncome, monthlySavings } = useStore();
-  const user = getUserSetup();
-  const userName = user?.name ?? 'User';
-  const userRole = user?.role ? (roleLabels[user.role] ?? user.role) : 'Getting Started';
+  const { profile, signOut } = useAuthStore();
+  const navigate = useNavigate();
+  const localUser = getUserSetup();
+  const userName = profile?.full_name ?? localUser?.name ?? 'User';
+  const userRole = profile?.role
+    ? (roleLabels[profile.role] ?? profile.role)
+    : localUser?.role
+      ? (roleLabels[localUser.role] ?? localUser.role)
+      : 'Getting Started';
   const userInitial = userName.charAt(0).toUpperCase();
+  const avatarUrl = profile?.avatar_url ?? null;
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Signed out');
+    navigate('/auth', { replace: true });
+  };
 
   const totalBudget = events.reduce((s, e) => s + e.budget, 0);
   const totalActual = events.reduce((s, e) => s + e.resources.reduce((a, r) => a + r.actualCost, 0), 0);
