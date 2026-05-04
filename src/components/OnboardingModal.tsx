@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { CalendarDays, Wallet, BarChart2, Target, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const STORAGE_KEY = 'planwise-user-setup';
 
@@ -40,23 +42,40 @@ interface Props {
 }
 
 export function OnboardingModal({ open, onComplete, initialValues }: Props) {
-  const [name, setName] = useState(initialValues?.name ?? '');
-  const [role, setRole] = useState(initialValues?.role ?? '');
+  const { profile, user, fetchProfile } = useAuthStore();
+  const [name, setName] = useState(initialValues?.name ?? profile?.full_name ?? '');
+  const [role, setRole] = useState(initialValues?.role ?? profile?.role ?? '');
 
   useEffect(() => {
     if (initialValues) {
       setName(initialValues.name);
       setRole(initialValues.role);
+    } else if (profile) {
+      if (profile.full_name) setName(profile.full_name);
+      if (profile.role) setRole(profile.role);
     }
-  }, [initialValues]);
+  }, [initialValues, profile]);
 
   const isValid = name.trim().length > 0 && role.length > 0;
   const isEditing = !!initialValues;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isValid) return;
     const data: UserSetup = { name: name.trim(), role };
     saveUserSetup(data);
+
+    if (user) {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ full_name: data.name, role: data.role })
+        .eq('id', user.id);
+      if (error) {
+        toast.error('Could not save profile', { description: error.message });
+        return;
+      }
+      await fetchProfile(user.id);
+    }
+
     onComplete();
     toast.success(`Welcome to PlanWise, ${data.name}!`);
   };

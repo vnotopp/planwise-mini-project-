@@ -12,7 +12,9 @@ import DebtManager from "./pages/DebtManager";
 import Portfolio from "./pages/Portfolio";
 import Reports from "./pages/Reports";
 import Marketplace from "./pages/Marketplace";
+import AuthPage from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import { AuthGuard } from "./components/AuthGuard";
 
 const queryClient = new QueryClient();
 
@@ -28,13 +30,14 @@ function AnimatedRoutes() {
         transition={{ duration: 0.3, ease: 'easeOut' }}
       >
         <Routes location={location}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/events" element={<EventPlanner />} />
-          <Route path="/expenses" element={<ExpenseTracker />} />
-          <Route path="/debts" element={<DebtManager />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/" element={<AuthGuard><Dashboard /></AuthGuard>} />
+          <Route path="/events" element={<AuthGuard><EventPlanner /></AuthGuard>} />
+          <Route path="/expenses" element={<AuthGuard><ExpenseTracker /></AuthGuard>} />
+          <Route path="/debts" element={<AuthGuard><DebtManager /></AuthGuard>} />
+          <Route path="/portfolio" element={<AuthGuard><Portfolio /></AuthGuard>} />
+          <Route path="/reports" element={<AuthGuard><Reports /></AuthGuard>} />
+          <Route path="/marketplace" element={<AuthGuard><Marketplace /></AuthGuard>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>

@@ -1,8 +1,11 @@
-import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen, Briefcase } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Receipt, Landmark, BarChart3, Compass, Settings, ShoppingBag, UserPen, Briefcase, LogOut } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useStore } from '@/store/useStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getUserSetup } from '@/components/OnboardingModal';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -29,10 +32,23 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const { events, debts, monthlyIncome, monthlySavings } = useStore();
-  const user = getUserSetup();
-  const userName = user?.name ?? 'User';
-  const userRole = user?.role ? (roleLabels[user.role] ?? user.role) : 'Getting Started';
+  const { profile, signOut } = useAuthStore();
+  const navigate = useNavigate();
+  const localUser = getUserSetup();
+  const userName = profile?.full_name ?? localUser?.name ?? 'User';
+  const userRole = profile?.role
+    ? (roleLabels[profile.role] ?? profile.role)
+    : localUser?.role
+      ? (roleLabels[localUser.role] ?? localUser.role)
+      : 'Getting Started';
   const userInitial = userName.charAt(0).toUpperCase();
+  const avatarUrl = profile?.avatar_url ?? null;
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Signed out');
+    navigate('/auth', { replace: true });
+  };
 
   const totalBudget = events.reduce((s, e) => s + e.budget, 0);
   const totalActual = events.reduce((s, e) => s + e.resources.reduce((a, r) => a + r.actualCost, 0), 0);
@@ -72,9 +88,13 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
 
         {!collapsed && (
           <div className="mt-5 flex items-center gap-3 p-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-sm shrink-0">
-              {userInitial}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={userName} className="h-10 w-10 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-sm shrink-0">
+                {userInitial}
+              </div>
+            )}
             <div className="min-w-0">
               <p className="text-sm font-bold text-foreground truncate uppercase tracking-wide">{userName}</p>
               <p className="text-[10px] text-muted-foreground">{userRole}</p>
@@ -83,9 +103,13 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
         )}
         {collapsed && (
           <div className="mt-3 flex justify-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-xs">
-              {userInitial}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={userName} className="h-8 w-8 rounded-full object-cover" />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-primary font-display font-bold text-xs">
+                {userInitial}
+              </div>
+            )}
           </div>
         )}
       </SidebarHeader>
@@ -135,6 +159,20 @@ export function AppSidebar({ onEditProfile }: { onEditProfile?: () => void }) {
             <ThemeToggle />
           </div>
         </div>
+        {!collapsed && (
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-destructive transition-colors w-full"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            <span>Sign Out</span>
+          </button>
+        )}
+        {collapsed && (
+          <button onClick={handleSignOut} className="flex justify-center text-muted-foreground hover:text-destructive">
+            <LogOut className="h-4 w-4" />
+          </button>
+        )}
       </SidebarFooter>
     </Sidebar>
   );
