@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuthStore, initAuth } from '@/store/useAuthStore';
 import { useStore } from '@/store/useStore';
+import { useMarketplaceStore } from '@/store/marketplaceStore';
 
 let bootstrapped = false;
 
@@ -12,6 +13,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const loadAll = useStore((s) => s.loadAll);
   const resetState = useStore((s) => s.resetState);
   const loaded = useStore((s) => s.loaded);
+  const loadMarketplace = useMarketplaceStore((s) => s.loadAll);
 
   useEffect(() => {
     if (!bootstrapped) {
@@ -21,9 +23,13 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (user) loadAll(user.id);
-    else resetState();
-  }, [user, loadAll, resetState]);
+    if (user) {
+      loadAll(user.id);
+      loadMarketplace(user.id);
+    } else {
+      resetState();
+    }
+  }, [user, loadAll, resetState, loadMarketplace]);
 
   if (!initialized) {
     return (
