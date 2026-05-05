@@ -2,12 +2,16 @@ import { ReactNode, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuthStore, initAuth } from '@/store/useAuthStore';
+import { useStore } from '@/store/useStore';
 
 let bootstrapped = false;
 
 export function AuthGuard({ children }: { children: ReactNode }) {
-  const { session, initialized } = useAuthStore();
+  const { session, initialized, user } = useAuthStore();
   const location = useLocation();
+  const loadAll = useStore((s) => s.loadAll);
+  const resetState = useStore((s) => s.resetState);
+  const loaded = useStore((s) => s.loaded);
 
   useEffect(() => {
     if (!bootstrapped) {
@@ -15,6 +19,11 @@ export function AuthGuard({ children }: { children: ReactNode }) {
       initAuth();
     }
   }, []);
+
+  useEffect(() => {
+    if (user) loadAll(user.id);
+    else resetState();
+  }, [user, loadAll, resetState]);
 
   if (!initialized) {
     return (
