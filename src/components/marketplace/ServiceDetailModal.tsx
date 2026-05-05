@@ -72,8 +72,18 @@ export function ServiceDetailModal({ listing, open, onClose }: Props) {
     setSelectedEvent('');
   };
 
-  const handleHireNow = () => {
-    toast.success('Enquiry Sent! The seller will contact you within 24 hours.');
+  const handleHireNow = async () => {
+    const { useAuthStore } = await import('@/store/useAuthStore');
+    const user = useAuthStore.getState().user;
+    if (!user) { toast.error('Please sign in to hire'); return; }
+    if (!listing.sellerId) { toast.success('Enquiry sent! The seller will contact you within 24 hours.'); onClose(); return; }
+    if (listing.sellerId === user.id) { toast.error("You can't hire your own listing"); return; }
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { error } = await supabase.from('enquiries').insert({
+      buyer_id: user.id, seller_id: listing.sellerId, listing_id: listing.id, status: 'pending',
+    });
+    if (error) { toast.error('Failed to send enquiry', { description: error.message }); return; }
+    toast.success('Enquiry sent! The seller will contact you within 24 hours.');
     onClose();
   };
 
