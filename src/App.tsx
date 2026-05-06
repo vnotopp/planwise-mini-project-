@@ -34,6 +34,7 @@ function AnimatedRoutes() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/" element={<AuthGuard><Dashboard /></AuthGuard>} />
+          <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
           <Route path="/events" element={<AuthGuard><EventPlanner /></AuthGuard>} />
           <Route path="/expenses" element={<AuthGuard><ExpenseTracker /></AuthGuard>} />
           <Route path="/debts" element={<AuthGuard><DebtManager /></AuthGuard>} />
