@@ -5,12 +5,17 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthStore } from '@/store/useAuthStore';
 
+function ensurePkceOAuthFlow() {
+  (supabase.auth as unknown as { flowType: 'pkce' }).flowType = 'pkce';
+}
+
 export default function AuthCallback() {
   const navigate = useNavigate();
   const { session, initialized } = useAuthStore();
 
   useEffect(() => {
     let mounted = true;
+    ensurePkceOAuthFlow();
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
       if (event === 'SIGNED_IN' && sess && mounted) {
