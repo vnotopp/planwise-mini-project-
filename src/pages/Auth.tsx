@@ -26,7 +26,7 @@ export default function AuthPage() {
   const handleGoogle = async () => {
     setLoading(true);
     const result = await lovable.auth.signInWithOAuth('google', {
-      redirect_uri: window.location.origin,
+      redirect_uri: 'https://planwise-mini-project.vercel.app/auth/callback',
     });
     if (result.error) {
       toast.error('Google sign-in failed', { description: String((result.error as Error).message ?? result.error) });
