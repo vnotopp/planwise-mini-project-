@@ -13,6 +13,7 @@ import Portfolio from "./pages/Portfolio";
 import Reports from "./pages/Reports";
 import Marketplace from "./pages/Marketplace";
 import AuthPage from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 import { AuthGuard } from "./components/AuthGuard";
 
