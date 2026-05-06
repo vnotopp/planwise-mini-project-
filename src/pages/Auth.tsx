@@ -6,8 +6,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { lovable } from '@/integrations/lovable';
 import { useAuthStore } from '@/store/useAuthStore';
+
+const PRODUCTION_AUTH_CALLBACK = 'https://planwise-mini-project.vercel.app/auth/callback';
+const AUTH_CALLBACK_PATH = '/auth/callback';
+
+function getOAuthRedirectTo() {
+  if (typeof window === 'undefined') return PRODUCTION_AUTH_CALLBACK;
+
+  const { origin, hostname } = window.location;
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+  const isVercelDeployment = hostname.endsWith('.vercel.app');
+
+  if (isLocalhost || isVercelDeployment) {
+    return `${origin}${AUTH_CALLBACK_PATH}`;
+  }
+
+  return PRODUCTION_AUTH_CALLBACK;
+}
+
+function ensurePkceOAuthFlow() {
+  (supabase.auth as unknown as { flowType: 'pkce' }).flowType = 'pkce';
+}
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -25,16 +45,25 @@ export default function AuthPage() {
 
   const handleGoogle = async () => {
     setLoading(true);
-    const result = await lovable.auth.signInWithOAuth('google', {
-      redirect_uri: 'https://planwise-mini-project.vercel.app/auth/callback',
+    ensurePkceOAuthFlow();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: getOAuthRedirectTo(),
+        queryParams: {
+          prompt: 'select_account',
+        },
+      },
     });
-    if (result.error) {
-      toast.error('Google sign-in failed', { description: String((result.error as Error).message ?? result.error) });
+
+    if (error) {
+      toast.error('Google sign-in failed', { description: error.message });
       setLoading(false);
       return;
     }
-    if (result.redirected) return;
-    navigate('/', { replace: true });
+
+    if (data.url) return;
+    navigate('/dashboard', { replace: true });
   };
 
   const handleEmail = async (e: React.FormEvent) => {
@@ -46,7 +75,7 @@ export default function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: { full_name: name },
           },
         });

@@ -22,6 +22,8 @@ interface AuthState {
   signOut: () => Promise<void>;
 }
 
+let authSubscription: { unsubscribe: () => void } | null = null;
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   session: null,
@@ -60,9 +62,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 export function initAuth() {
   const { setSession } = useAuthStore.getState();
 
-  supabase.auth.onAuthStateChange((_event, session) => {
+  if (authSubscription) return;
+
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
     setSession(session);
+    useAuthStore.setState({ loading: false, initialized: true });
   });
+  authSubscription = data.subscription;
 
   supabase.auth.getSession().then(({ data: { session } }) => {
     setSession(session);
