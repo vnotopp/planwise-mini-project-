@@ -13,6 +13,7 @@ import Portfolio from "./pages/Portfolio";
 import Reports from "./pages/Reports";
 import Marketplace from "./pages/Marketplace";
 import AuthPage from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 import { AuthGuard } from "./components/AuthGuard";
 
@@ -31,6 +32,7 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/" element={<AuthGuard><Dashboard /></AuthGuard>} />
           <Route path="/events" element={<AuthGuard><EventPlanner /></AuthGuard>} />
           <Route path="/expenses" element={<AuthGuard><ExpenseTracker /></AuthGuard>} />

@@ -27,8 +27,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
     setUserKey((k) => k + 1);
   }, []);
 
-  // Bare layout on /auth route — no sidebar, no chrome
-  if (location.pathname === '/auth') {
+  // Bare layout on /auth routes — no sidebar, no chrome
+  if (location.pathname === '/auth' || location.pathname === '/auth/callback') {
     return <>{children}</>;
   }
 
