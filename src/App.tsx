@@ -32,6 +32,7 @@ function AnimatedRoutes() {
       >
         <Routes location={location}>
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/" element={<AuthGuard><Dashboard /></AuthGuard>} />
           <Route path="/events" element={<AuthGuard><EventPlanner /></AuthGuard>} />
           <Route path="/expenses" element={<AuthGuard><ExpenseTracker /></AuthGuard>} />
