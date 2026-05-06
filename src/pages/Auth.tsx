@@ -25,6 +25,10 @@ function getOAuthRedirectTo() {
   return PRODUCTION_AUTH_CALLBACK;
 }
 
+function ensurePkceOAuthFlow() {
+  (supabase.auth as unknown as { flowType: 'pkce' }).flowType = 'pkce';
+}
+
 export default function AuthPage() {
   const navigate = useNavigate();
   const { session, initialized } = useAuthStore();
@@ -41,6 +45,7 @@ export default function AuthPage() {
 
   const handleGoogle = async () => {
     setLoading(true);
+    ensurePkceOAuthFlow();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
